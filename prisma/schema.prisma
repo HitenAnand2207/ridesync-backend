@@ -6,3 +6,99 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+model User {
+  id           String    @id @default(uuid())
+  name         String
+  email        String    @unique
+  password     String
+  phone        String?
+  avatar       String?
+  isVerified   Boolean   @default(false)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  ridesOffered Ride[]     @relation("OfferedRides")
+  bookings     Booking[]
+  notifications Notification[]
+
+  @@index([email])
+}
+
+model Ride {
+  id            String    @id @default(uuid())
+  driverId      String
+  origin        String
+  destination   String
+  originLat     Float?
+  originLng     Float?
+  destLat       Float?
+  destLng       Float?
+  departureTime DateTime
+  totalSeats    Int
+  availableSeats Int
+  pricePerSeat  Float
+  status        RideStatus @default(ACTIVE)
+  description   String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  driver        User      @relation("OfferedRides", fields: [driverId], references: [id], onDelete: Cascade)
+  bookings      Booking[]
+
+  @@index([driverId])
+  @@index([origin, destination])
+  @@index([departureTime])
+  @@index([status])
+}
+
+model Booking {
+  id        String        @id @default(uuid())
+  rideId    String
+  userId    String
+  seats     Int           @default(1)
+  status    BookingStatus @default(PENDING)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  ride      Ride          @relation(fields: [rideId], references: [id], onDelete: Cascade)
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([rideId, userId])
+  @@index([userId])
+  @@index([rideId])
+}
+
+model Notification {
+  id        String             @id @default(uuid())
+  userId    String
+  title     String
+  message   String
+  type      NotificationType   @default(INFO)
+  read      Boolean            @default(false)
+  createdAt DateTime           @default(now())
+
+  user      User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+enum RideStatus {
+  ACTIVE
+  FULL
+  CANCELLED
+  COMPLETED
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+}
+
+enum NotificationType {
+  INFO
+  SUCCESS
+  WARNING
+  ERROR
+}
