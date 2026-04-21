@@ -14,15 +14,17 @@ A ride-sharing coordination REST API built with Node.js, TypeScript, Express, Po
 
 ## Project Structure
 
+```
 src/
-├── config/         # Database, Redis, env configuration
-├── controllers/    # Route handlers
-├── middlewares/    # Auth, error handler
-├── routes/         # Express routers
-├── services/       # Business logic
-├── workers/        # BullMQ job workers
-├── utils/          # JWT, hash helpers
-└── types/          # TypeScript interfaces
+├── config/          # Database, Redis, env configuration
+├── controllers/     # Route handlers
+├── middlewares/     # Auth, error handler
+├── routes/          # Express routers
+├── services/        # Business logic
+├── workers/         # BullMQ job workers
+├── utils/           # JWT, hash helpers
+└── types/           # TypeScript interfaces
+```
 
 ## Getting Started
 
