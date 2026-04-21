@@ -103,7 +103,7 @@ npm start
 | GET | `/api/rides/:id` | Get ride details | Yes |
 | PATCH | `/api/rides/:id/cancel` | Cancel a ride | Yes |
 
-### Bookings *(coming soon)*
+### Bookings 
 
 | Method | Endpoint | Description | Auth |
 |---|---|---|---|
