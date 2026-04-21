@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 import { errorHandler } from './middlewares/error.middleware';
 import authRoutes from './routes/auth.routes';
 import rideRoutes from './routes/ride.routes';
+import bookingRoutes from './routes/booking.routes';
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.get('/health', (req, res) => {
 
 app.use('/api/auth', authRoutes);
 app.use('/api/rides', rideRoutes);
+app.use('/api', bookingRoutes);
 
 app.use(errorHandler);
 
