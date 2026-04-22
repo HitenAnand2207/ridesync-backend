@@ -6,6 +6,7 @@ import { errorHandler } from './middlewares/error.middleware';
 import authRoutes from './routes/auth.routes';
 import rideRoutes from './routes/ride.routes';
 import bookingRoutes from './routes/booking.routes';
+import matchingRoutes from './routes/matching.routes';
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.get('/health', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/rides', rideRoutes);
 app.use('/api', bookingRoutes);
+app.use('/api', matchingRoutes);
 
 app.use(errorHandler);
 
