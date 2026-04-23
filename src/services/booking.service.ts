@@ -1,5 +1,6 @@
 import { prisma } from '../config/prisma';
 import { BookingStatus, RideStatus } from '../../generated/prisma';
+import { notificationQueue } from '../config/queue';
 
 export const bookRide = async (rideId: string, userId: string, seats: number = 1) => {
   const ride = await prisma.ride.findUnique({ where: { id: rideId } });
@@ -13,6 +14,9 @@ export const bookRide = async (rideId: string, userId: string, seats: number = 1
     where: { rideId_userId: { rideId, userId } },
   });
   if (existingBooking) throw new Error('You have already booked this ride');
+
+  const user = await prisma.user.findUnique({ where: { id: userId } });
+  if (!user) throw new Error('User not found');
 
   const [booking] = await prisma.$transaction([
     prisma.booking.create({
@@ -34,6 +38,17 @@ export const bookRide = async (rideId: string, userId: string, seats: number = 1
       },
     }),
   ]);
+
+  await notificationQueue.add('booking-confirmed', {
+    type: 'BOOKING_CONFIRMED',
+    userId: user.id,
+    email: user.email,
+    name: user.name,
+    rideOrigin: ride.origin,
+    rideDestination: ride.destination,
+    departureTime: ride.departureTime.toISOString(),
+    bookingId: booking.id,
+  });
 
   return booking;
 };
@@ -64,6 +79,9 @@ export const cancelBooking = async (bookingId: string, userId: string) => {
   if (booking.userId !== userId) throw new Error('Not authorized to cancel this booking');
   if (booking.status === BookingStatus.CANCELLED) throw new Error('Booking already cancelled');
 
+  const user = await prisma.user.findUnique({ where: { id: userId } });
+  if (!user) throw new Error('User not found');
+
   const [updated] = await prisma.$transaction([
     prisma.booking.update({
       where: { id: bookingId },
@@ -77,6 +95,17 @@ export const cancelBooking = async (bookingId: string, userId: string) => {
       },
     }),
   ]);
+
+  await notificationQueue.add('booking-cancelled', {
+    type: 'BOOKING_CANCELLED',
+    userId: user.id,
+    email: user.email,
+    name: user.name,
+    rideOrigin: booking.ride.origin,
+    rideDestination: booking.ride.destination,
+    departureTime: booking.ride.departureTime.toISOString(),
+    bookingId: booking.id,
+  });
 
   return updated;
 };
