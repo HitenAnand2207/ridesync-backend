@@ -8,43 +8,43 @@ datasource db {
 }
 
 model User {
-  id           String    @id @default(uuid())
-  name         String
-  email        String    @unique
-  password     String
-  phone        String?
-  avatar       String?
-  isVerified   Boolean   @default(false)
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  id            String         @id @default(uuid())
+  name          String
+  email         String         @unique
+  password      String
+  phone         String?
+  avatar        String?
+  isVerified    Boolean        @default(false)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
 
-  ridesOffered Ride[]     @relation("OfferedRides")
-  bookings     Booking[]
+  ridesOffered  Ride[]         @relation("OfferedRides")
+  bookings      Booking[]
   notifications Notification[]
 
   @@index([email])
 }
 
 model Ride {
-  id            String    @id @default(uuid())
-  driverId      String
-  origin        String
-  destination   String
-  originLat     Float?
-  originLng     Float?
-  destLat       Float?
-  destLng       Float?
-  departureTime DateTime
-  totalSeats    Int
+  id             String     @id @default(uuid())
+  driverId       String
+  origin         String
+  destination    String
+  originLat      Float?
+  originLng      Float?
+  destLat        Float?
+  destLng        Float?
+  departureTime  DateTime
+  totalSeats     Int
   availableSeats Int
-  pricePerSeat  Float
-  status        RideStatus @default(ACTIVE)
-  description   String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  pricePerSeat   Float
+  status         RideStatus @default(ACTIVE)
+  description    String?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
 
-  driver        User      @relation("OfferedRides", fields: [driverId], references: [id], onDelete: Cascade)
-  bookings      Booking[]
+  driver         User       @relation("OfferedRides", fields: [driverId], references: [id], onDelete: Cascade)
+  bookings       Booking[]
 
   @@index([driverId])
   @@index([origin, destination])
@@ -63,22 +63,42 @@ model Booking {
 
   ride      Ride          @relation(fields: [rideId], references: [id], onDelete: Cascade)
   user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  payment   Payment?
 
   @@unique([rideId, userId])
   @@index([userId])
   @@index([rideId])
 }
 
+model Payment {
+  id                String        @id @default(uuid())
+  bookingId         String        @unique
+  userId            String
+  amount            Float
+  currency          String        @default("INR")
+  razorpayOrderId   String        @unique
+  razorpayPaymentId String?
+  razorpaySignature String?
+  status            PaymentStatus @default(PENDING)
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  booking           Booking       @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([razorpayOrderId])
+}
+
 model Notification {
-  id        String             @id @default(uuid())
+  id        String           @id @default(uuid())
   userId    String
   title     String
   message   String
-  type      NotificationType   @default(INFO)
-  read      Boolean            @default(false)
-  createdAt DateTime           @default(now())
+  type      NotificationType @default(INFO)
+  read      Boolean          @default(false)
+  createdAt DateTime         @default(now())
 
-  user      User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
 }
@@ -94,6 +114,13 @@ enum BookingStatus {
   PENDING
   CONFIRMED
   CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  CAPTURED
+  FAILED
+  REFUNDED
 }
 
 enum NotificationType {
