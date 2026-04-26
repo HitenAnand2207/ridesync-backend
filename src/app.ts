@@ -7,6 +7,7 @@ import authRoutes from './routes/auth.routes';
 import rideRoutes from './routes/ride.routes';
 import bookingRoutes from './routes/booking.routes';
 import matchingRoutes from './routes/matching.routes';
+import paymentRoutes from './routes/payment.routes';
 
 const app = express();
 
@@ -23,7 +24,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/rides', rideRoutes);
 app.use('/api', bookingRoutes);
 app.use('/api', matchingRoutes);
+app.use('/api', paymentRoutes);
 
 app.use(errorHandler);
 
-export default app; 
+export default app;
