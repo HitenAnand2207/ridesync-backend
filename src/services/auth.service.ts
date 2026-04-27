@@ -2,6 +2,11 @@ import { prisma } from '../config/prisma';
 import { redis } from '../config/redis';
 import { hashPassword, comparePassword } from '../utils/hash';
 import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from '../utils/jwt';
+import { sendOtpEmail } from '../utils/mailer';
+
+const generateOtp = (): string => {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+};
 
 export const registerUser = async (
   name: string,
@@ -9,17 +14,73 @@ export const registerUser = async (
   password: string,
   phone?: string
 ) => {
+  if (!email.endsWith('@kiit.ac.in')) {
+    throw new Error('Only KIIT email addresses (@kiit.ac.in) are allowed');
+  }
+
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) throw new Error('Email already registered');
 
   const hashed = await hashPassword(password);
+  const otp = generateOtp();
+  const otpExpiresAt = new Date(Date.now() + 10 * 60 * 1000);
 
   const user = await prisma.user.create({
-    data: { name, email, password: hashed, phone },
-    select: { id: true, name: true, email: true, phone: true, createdAt: true },
+    data: {
+      name,
+      email,
+      password: hashed,
+      phone,
+      isVerified: false,
+      otpCode: otp,
+      otpExpiresAt,
+    },
+    select: { id: true, name: true, email: true, phone: true, createdAt: true, isVerified: true },
   });
 
+  await sendOtpEmail(email, name, otp);
+
   return user;
+};
+
+export const verifyOtp = async (email: string, otp: string) => {
+  const user = await prisma.user.findUnique({ where: { email } });
+
+  if (!user) throw new Error('User not found');
+  if (user.isVerified) throw new Error('Email already verified');
+  if (!user.otpCode || !user.otpExpiresAt) throw new Error('No OTP found. Please register again');
+  if (new Date() > user.otpExpiresAt) throw new Error('OTP has expired. Please request a new one');
+  if (user.otpCode !== otp) throw new Error('Invalid OTP');
+
+  await prisma.user.update({
+    where: { email },
+    data: {
+      isVerified: true,
+      otpCode: null,
+      otpExpiresAt: null,
+    },
+  });
+
+  return { message: 'Email verified successfully' };
+};
+
+export const resendOtp = async (email: string) => {
+  const user = await prisma.user.findUnique({ where: { email } });
+
+  if (!user) throw new Error('User not found');
+  if (user.isVerified) throw new Error('Email already verified');
+
+  const otp = generateOtp();
+  const otpExpiresAt = new Date(Date.now() + 10 * 60 * 1000);
+
+  await prisma.user.update({
+    where: { email },
+    data: { otpCode: otp, otpExpiresAt },
+  });
+
+  await sendOtpEmail(email, user.name, otp);
+
+  return { message: 'OTP resent successfully' };
 };
 
 export const loginUser = async (email: string, password: string) => {
@@ -28,6 +89,8 @@ export const loginUser = async (email: string, password: string) => {
 
   const valid = await comparePassword(password, user.password);
   if (!valid) throw new Error('Invalid credentials');
+
+  if (!user.isVerified) throw new Error('Please verify your email before logging in');
 
   const payload = { userId: user.id, email: user.email };
   const accessToken = generateAccessToken(payload);
