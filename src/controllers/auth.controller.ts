@@ -1,5 +1,12 @@
 import { Request, Response } from 'express';
-import { registerUser, loginUser, refreshAccessToken, logoutUser } from '../services/auth.service';
+import {
+  registerUser,
+  loginUser,
+  refreshAccessToken,
+  logoutUser,
+  verifyOtp,
+  resendOtp,
+} from '../services/auth.service';
 import { AuthRequest } from '../types';
 
 export const register = async (req: Request, res: Response): Promise<void> => {
@@ -12,7 +19,38 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     }
 
     const user = await registerUser(name, email, password, phone);
-    res.status(201).json({ message: 'User registered successfully', user });
+    res.status(201).json({
+      message: 'Account created. Please check your KIIT email for the OTP.',
+      user,
+    });
+  } catch (err: any) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
+export const verify = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { email, otp } = req.body;
+    if (!email || !otp) {
+      res.status(400).json({ message: 'Email and OTP are required' });
+      return;
+    }
+    const result = await verifyOtp(email, otp);
+    res.json(result);
+  } catch (err: any) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
+export const resend = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      res.status(400).json({ message: 'Email is required' });
+      return;
+    }
+    const result = await resendOtp(email);
+    res.json(result);
   } catch (err: any) {
     res.status(400).json({ message: err.message });
   }
