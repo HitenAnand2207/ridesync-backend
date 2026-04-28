@@ -1,34 +1,24 @@
 import { Response } from 'express';
 import { AuthRequest } from '../types';
-import { getMatchedRides } from '../services/matching.service';
+import { getMatchedGroups } from '../services/matching.service';
 
-export const matchRides = async (req: AuthRequest, res: Response): Promise<void> => {
+export const matchGroups = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const {
-      origin,
-      destination,
-      departureTime,
-      seats,
-      originLat,
-      originLng,
-      destLat,
-      destLng,
-    } = req.query;
+    const origin = req.query.origin as string | undefined;
+    const destination = req.query.destination as string | undefined;
+    const departureTime = req.query.departureTime as string | undefined;
+    const slots = req.query.slots as string | undefined;
 
     if (!origin || !destination || !departureTime) {
       res.status(400).json({ message: 'origin, destination and departureTime are required' });
       return;
     }
 
-    const matches = await getMatchedRides({
-      origin: origin as string,
-      destination: destination as string,
-      departureTime: departureTime as string,
-      seats: seats ? parseInt(seats as string) : 1,
-      originLat: originLat ? parseFloat(originLat as string) : undefined,
-      originLng: originLng ? parseFloat(originLng as string) : undefined,
-      destLat: destLat ? parseFloat(destLat as string) : undefined,
-      destLng: destLng ? parseFloat(destLng as string) : undefined,
+    const matches = await getMatchedGroups({
+      origin,
+      destination,
+      departureTime,
+      slots: slots ? parseInt(slots) : 1,
     });
 
     res.json({ matches, count: matches.length });
