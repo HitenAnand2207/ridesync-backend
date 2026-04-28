@@ -4,7 +4,7 @@ import { authenticate } from '../middlewares/auth.middleware';
 
 const router = Router();
 
-router.post('/rides/:id/pay', authenticate, createOrder);
+router.post('/groups/:id/pay', authenticate, createOrder);
 router.post('/payments/verify', authenticate, verify);
 
 export default router;
