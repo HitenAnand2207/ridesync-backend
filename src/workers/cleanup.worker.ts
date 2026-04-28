@@ -4,26 +4,26 @@ dotenv.config();
 import { Worker, Job } from 'bullmq';
 import IORedis from 'ioredis';
 import { prisma } from '../config/prisma';
-import { RideStatus } from '../../generated/prisma';
+import { GroupStatus } from '../../generated/prisma';
 
 const connection = new IORedis(process.env.REDIS_URL!, {
   maxRetriesPerRequest: null,
 });
 
 const processCleanup = async (job: Job) => {
-  console.log('[CLEANUP] Running ride cleanup job...');
+  console.log('[CLEANUP] Running group cleanup job...');
 
   const now = new Date();
 
-  const expiredRides = await prisma.ride.updateMany({
+  const expiredGroups = await prisma.rideGroup.updateMany({
     where: {
       departureTime: { lt: now },
-      status: { in: [RideStatus.ACTIVE, RideStatus.FULL] },
+      status: { in: [GroupStatus.OPEN, GroupStatus.FULL] },
     },
-    data: { status: RideStatus.COMPLETED },
+    data: { status: GroupStatus.DEPARTED },
   });
 
-  console.log(`[CLEANUP] Marked ${expiredRides.count} rides as COMPLETED`);
+  console.log(`[CLEANUP] Marked ${expiredGroups.count} groups as DEPARTED`);
 };
 
 export const cleanupWorker = new Worker(
