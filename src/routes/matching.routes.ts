@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import { matchRides } from '../controllers/matching.controller';
+import { matchGroups } from '../controllers/matching.controller';
 import { authenticate } from '../middlewares/auth.middleware';
 
 const router = Router();
 
-router.get('/match', authenticate, matchRides);
+router.get('/match', authenticate, matchGroups);
 
 export default router;
