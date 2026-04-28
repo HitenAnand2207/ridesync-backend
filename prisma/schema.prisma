@@ -20,63 +20,64 @@ model User {
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
 
-  ridesOffered  Ride[]         @relation("OfferedRides")
-  bookings      Booking[]
-  notifications Notification[]
+  groupsCreated  RideGroup[]    @relation("CreatedGroups")
+  memberships    GroupMember[]
+  notifications  Notification[]
+  payments       Payment[]
 
   @@index([email])
 }
 
-model Ride {
-  id             String     @id @default(uuid())
-  driverId       String
-  origin         String
-  destination    String
-  originLat      Float?
-  originLng      Float?
-  destLat        Float?
-  destLng        Float?
-  departureTime  DateTime
-  totalSeats     Int
-  availableSeats Int
-  pricePerSeat   Float
-  status         RideStatus @default(ACTIVE)
-  description    String?
-  createdAt      DateTime   @default(now())
-  updatedAt      DateTime   @updatedAt
+model RideGroup {
+  id               String        @id @default(uuid())
+  organizerId      String
+  origin           String
+  destination      String
+  departureTime    DateTime
+  totalSlots       Int
+  availableSlots   Int
+  estimatedFare    Float
+  status           GroupStatus   @default(OPEN)
+  description      String?
+  whatsappLink     String?
+  olaDeepLink      String?
+  uberDeepLink     String?
+  platformFeePaid  Boolean       @default(false)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
 
-  driver         User       @relation("OfferedRides", fields: [driverId], references: [id], onDelete: Cascade)
-  bookings       Booking[]
+  organizer        User          @relation("CreatedGroups", fields: [organizerId], references: [id], onDelete: Cascade)
+  members          GroupMember[]
+  payment          Payment?
 
-  @@index([driverId])
+  @@index([organizerId])
   @@index([origin, destination])
   @@index([departureTime])
   @@index([status])
 }
 
-model Booking {
-  id        String        @id @default(uuid())
-  rideId    String
-  userId    String
-  seats     Int           @default(1)
-  status    BookingStatus @default(PENDING)
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
+model GroupMember {
+  id          String            @id @default(uuid())
+  groupId     String
+  userId      String
+  status      MemberStatus      @default(PENDING)
+  share       Float
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
 
-  ride      Ride          @relation(fields: [rideId], references: [id], onDelete: Cascade)
-  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  payment   Payment?
+  group       RideGroup         @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([rideId, userId])
+  @@unique([groupId, userId])
   @@index([userId])
-  @@index([rideId])
+  @@index([groupId])
 }
 
 model Payment {
   id                String        @id @default(uuid())
-  bookingId         String        @unique
+  groupId           String        @unique
   userId            String
-  amount            Float
+  amount            Float         @default(30)
   currency          String        @default("INR")
   razorpayOrderId   String        @unique
   razorpayPaymentId String?
@@ -85,7 +86,8 @@ model Payment {
   createdAt         DateTime      @default(now())
   updatedAt         DateTime      @updatedAt
 
-  booking           Booking       @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  group             RideGroup     @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user              User          @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([razorpayOrderId])
@@ -105,17 +107,17 @@ model Notification {
   @@index([userId])
 }
 
-enum RideStatus {
-  ACTIVE
+enum GroupStatus {
+  OPEN
   FULL
+  DEPARTED
   CANCELLED
-  COMPLETED
 }
 
-enum BookingStatus {
+enum MemberStatus {
   PENDING
   CONFIRMED
-  CANCELLED
+  LEFT
 }
 
 enum PaymentStatus {
