@@ -1,72 +1,62 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 import crypto from 'crypto';
 import { razorpay } from '../config/razorpay';
 import { prisma } from '../config/prisma';
 import { env } from '../config/env';
-import { BookingStatus, PaymentStatus, RideStatus } from '../../generated/prisma';
+import { GroupStatus, PaymentStatus } from '../../generated/prisma';
 import { notificationQueue } from '../config/queue';
 
-export const createPaymentOrder = async (
-  rideId: string,
-  userId: string,
-  seats: number = 1
-) => {
-  const ride = await prisma.ride.findUnique({ where: { id: rideId } });
-  if (!ride) throw new Error('Ride not found');
-  if (ride.status !== RideStatus.ACTIVE) throw new Error('Ride is not available');
-  if (ride.driverId === userId) throw new Error('You cannot book your own ride');
-  if (ride.availableSeats < seats) throw new Error(`Only ${ride.availableSeats} seat(s) available`);
+const PLATFORM_FEE = 30;
 
-  const existing = await prisma.booking.findUnique({
-    where: { rideId_userId: { rideId, userId } },
+export const createPlatformFeeOrder = async (groupId: string, userId: string) => {
+  const group = await prisma.rideGroup.findUnique({
+    where: { id: groupId },
+    include: { organizer: true },
   });
-  if (existing) throw new Error('You have already booked this ride');
 
-  const amount = ride.pricePerSeat * seats;
+  if (!group) throw new Error('Group not found');
+  if (group.organizerId !== userId) throw new Error('Only the organizer pays the platform fee');
+  if (group.platformFeePaid) throw new Error('Platform fee already paid for this group');
 
   const order = await razorpay.orders.create({
-    amount: Math.round(amount * 100),
+    amount: PLATFORM_FEE * 100,
     currency: 'INR',
-    receipt: `receipt_${Date.now()}`,
-    notes: { rideId, userId, seats: seats.toString() },
+    receipt: `platform_fee_${Date.now()}`,
+    notes: { groupId, userId, type: 'platform_fee' },
   });
 
-  const booking = await prisma.booking.create({
+  await prisma.payment.create({
     data: {
-      rideId,
+      groupId,
       userId,
-      seats,
-      status: BookingStatus.PENDING,
-      payment: {
-        create: {
-          userId,
-          amount,
-          currency: 'INR',
-          razorpayOrderId: order.id,
-          status: PaymentStatus.PENDING,
-        },
-      },
+      amount: PLATFORM_FEE,
+      currency: 'INR',
+      razorpayOrderId: order.id,
+      status: PaymentStatus.PENDING,
     },
   });
 
   return {
     orderId: order.id,
-    amount: Math.round(amount * 100),
+    amount: PLATFORM_FEE * 100,
     currency: 'INR',
-    bookingId: booking.id,
+    groupId,
     keyId: env.razorpay.keyId,
-    ride: {
-      origin: ride.origin,
-      destination: ride.destination,
-      departureTime: ride.departureTime,
+    group: {
+      origin: group.origin,
+      destination: group.destination,
+      departureTime: group.departureTime,
     },
   };
 };
 
-export const verifyPayment = async (
+export const verifyPlatformFeePayment = async (
   razorpayOrderId: string,
   razorpayPaymentId: string,
   razorpaySignature: string,
-  bookingId: string,
+  groupId: string,
   userId: string
 ) => {
   const expectedSignature = crypto
@@ -82,11 +72,11 @@ export const verifyPayment = async (
     throw new Error('Payment verification failed');
   }
 
-  const booking = await prisma.booking.findUnique({
-    where: { id: bookingId },
-    include: { ride: true, user: true },
+  const group = await prisma.rideGroup.findUnique({
+    where: { id: groupId },
+    include: { organizer: true },
   });
-  if (!booking) throw new Error('Booking not found');
+  if (!group) throw new Error('Group not found');
 
   await prisma.$transaction([
     prisma.payment.update({
@@ -97,32 +87,22 @@ export const verifyPayment = async (
         status: PaymentStatus.CAPTURED,
       },
     }),
-    prisma.booking.update({
-      where: { id: bookingId },
-      data: { status: BookingStatus.CONFIRMED },
-    }),
-    prisma.ride.update({
-      where: { id: booking.rideId },
-      data: {
-        availableSeats: { decrement: booking.seats },
-        status:
-          booking.ride.availableSeats - booking.seats === 0
-            ? RideStatus.FULL
-            : RideStatus.ACTIVE,
-      },
+    prisma.rideGroup.update({
+      where: { id: groupId },
+      data: { platformFeePaid: true, status: GroupStatus.OPEN },
     }),
   ]);
 
-  await notificationQueue.add('booking-confirmed', {
+  await notificationQueue.add('group-created', {
     type: 'BOOKING_CONFIRMED',
-    userId: booking.user.id,
-    email: booking.user.email,
-    name: booking.user.name,
-    rideOrigin: booking.ride.origin,
-    rideDestination: booking.ride.destination,
-    departureTime: booking.ride.departureTime.toISOString(),
-    bookingId: booking.id,
+    userId: group.organizer.id,
+    email: group.organizer.email,
+    name: group.organizer.name,
+    rideOrigin: group.origin,
+    rideDestination: group.destination,
+    departureTime: group.departureTime.toISOString(),
+    bookingId: groupId,
   });
 
-  return { success: true, bookingId };
+  return { success: true, groupId };
 };
