@@ -8,6 +8,7 @@ import { redis } from './config/redis';
 import { notificationWorker } from './workers/notification.worker';
 import { cleanupWorker } from './workers/cleanup.worker';
 import { startScheduler } from './workers/scheduler';
+import { getTelegramBot } from './utils/telegram';
 
 const start = async () => {
   try {
@@ -17,6 +18,8 @@ const start = async () => {
     notificationWorker;
     cleanupWorker;
     console.log('✅ BullMQ workers started');
+
+    getTelegramBot();
 
     await startScheduler();
 
