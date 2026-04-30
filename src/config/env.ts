@@ -14,6 +14,9 @@ export const env = {
     keyId: process.env.RAZORPAY_KEY_ID!,
     keySecret: process.env.RAZORPAY_KEY_SECRET!,
   },
+  telegram: {
+    botToken: process.env.TELEGRAM_BOT_TOKEN!,
+  },
   smtp: {
     host: process.env.SMTP_HOST!,
     port: Number(process.env.SMTP_PORT) || 587,
