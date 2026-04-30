@@ -21,6 +21,7 @@ app.use(cookieParser());
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
+app.get('/api/test-auth', (req, res) => res.json({ ok: true }));
 
 app.use('/api/auth', authRoutes);
 app.use('/api/groups', groupRoutes);
