@@ -5,97 +5,106 @@ import { Worker, Job } from 'bullmq';
 import IORedis from 'ioredis';
 import { prisma } from '../config/prisma';
 import { sendEmail } from '../utils/mailer';
+import { sendTelegramMessage, buildTelegramMessage } from '../utils/telegram';
 
 const connection = new IORedis(process.env.REDIS_URL!, {
   maxRetriesPerRequest: null,
 });
 
 export interface NotificationJobData {
-  type: 'BOOKING_CONFIRMED' | 'BOOKING_CANCELLED' | 'RIDE_CANCELLED';
-  userId: string;
-  email: string;
-  name: string;
-  rideOrigin: string;
-  rideDestination: string;
-  departureTime: string;
-  bookingId?: string;
+  type: 'GROUP_CREATED' | 'MEMBER_JOINED' | 'MEMBER_LEFT' | 'GROUP_CANCELLED';
+  groupId: string;
+  triggerUserId?: string;
 }
 
 const processNotification = async (job: Job<NotificationJobData>) => {
-  const { type, userId, email, name, rideOrigin, rideDestination, departureTime } = job.data;
+  const { type, groupId } = job.data;
+  console.log(`[WORKER] Processing: ${type} for group ${groupId}`);
 
-  console.log(`[WORKER] Processing notification job: ${type} for ${email}`);
-
-  let title = '';
-  let message = '';
-  let subject = '';
-  let html = '';
-
-  switch (type) {
-    case 'BOOKING_CONFIRMED':
-      title = 'Booking Confirmed!';
-      message = `Your booking for ${rideOrigin} → ${rideDestination} on ${new Date(departureTime).toLocaleString()} has been confirmed.`;
-      subject = 'RideSync — Booking Confirmed';
-      html = `
-        <h2>Hey ${name}, your ride is booked!</h2>
-        <p><strong>From:</strong> ${rideOrigin}</p>
-        <p><strong>To:</strong> ${rideDestination}</p>
-        <p><strong>Departure:</strong> ${new Date(departureTime).toLocaleString()}</p>
-        <p>Have a safe journey!</p>
-        <br/>
-        <p>— RideSync Team</p>
-      `;
-      break;
-
-    case 'BOOKING_CANCELLED':
-      title = 'Booking Cancelled';
-      message = `Your booking for ${rideOrigin} → ${rideDestination} has been cancelled.`;
-      subject = 'RideSync — Booking Cancelled';
-      html = `
-        <h2>Hey ${name}, your booking has been cancelled.</h2>
-        <p><strong>From:</strong> ${rideOrigin}</p>
-        <p><strong>To:</strong> ${rideDestination}</p>
-        <p>You can search for another ride on RideSync.</p>
-        <br/>
-        <p>— RideSync Team</p>
-      `;
-      break;
-
-    case 'RIDE_CANCELLED':
-      title = 'Ride Cancelled by Driver';
-      message = `The ride from ${rideOrigin} → ${rideDestination} on ${new Date(departureTime).toLocaleString()} has been cancelled by the driver.`;
-      subject = 'RideSync — Ride Cancelled by Driver';
-      html = `
-        <h2>Hey ${name}, your ride has been cancelled.</h2>
-        <p>The driver has cancelled the ride from <strong>${rideOrigin}</strong> to <strong>${rideDestination}</strong>.</p>
-        <p>Please search for an alternative ride.</p>
-        <br/>
-        <p>— RideSync Team</p>
-      `;
-      break;
-  }
-
-  await prisma.notification.create({
-    data: {
-      userId,
-      title,
-      message,
-      type: 'INFO',
+  const group = await prisma.rideGroup.findUnique({
+    where: { id: groupId },
+    include: {
+      organizer: true,
+      members: {
+        where: { status: 'CONFIRMED' },
+        include: { user: true },
+      },
     },
   });
 
-  await sendEmail(email, subject, html);
+  if (!group) return;
 
-  console.log(`[WORKER] Notification saved and email sent for job: ${type}`);
+  const filledSlots = group.members.length;
+  const share = Math.ceil(group.estimatedFare / group.totalSlots);
+
+  for (const member of group.members) {
+    const isOrganizer = member.userId === group.organizerId;
+
+    const message = buildTelegramMessage({
+      origin: group.origin,
+      destination: group.destination,
+      departureTime: group.departureTime.toISOString(),
+      share,
+      totalSlots: group.totalSlots,
+      filledSlots,
+      organizerName: group.organizer.name,
+      organizerPhone: group.organizer.phone,
+      olaDeepLink: group.olaDeepLink || '',
+      uberDeepLink: group.uberDeepLink || '',
+      isOrganizer,
+      eventType: type,
+    });
+
+    await prisma.notification.create({
+      data: {
+        userId: member.userId,
+        title: type === 'GROUP_CREATED' ? 'Group is live!' :
+               type === 'MEMBER_JOINED' ? 'New member joined' :
+               type === 'MEMBER_LEFT' ? 'Member left' : 'Group cancelled',
+        message: `${group.origin} → ${group.destination}`,
+        type: 'INFO',
+      },
+    });
+
+    if (member.user.telegramChatId) {
+      await sendTelegramMessage(member.user.telegramChatId, message);
+    }
+
+    const emailHtml = `
+      <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto; padding: 32px;">
+        <h2 style="color: #4f46e5; margin-bottom: 4px;">RideSync</h2>
+        <p style="color: #64748b; font-size: 13px; margin-bottom: 24px;">Share cabs. Split the fare.</p>
+        <div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin-bottom: 24px;">
+          <h3 style="margin: 0 0 16px; color: #0f172a;">${group.origin} → ${group.destination}</h3>
+          <p style="margin: 0 0 8px; color: #475569;"><strong>Departure:</strong> ${new Date(group.departureTime).toLocaleString()}</p>
+          <p style="margin: 0 0 8px; color: #475569;"><strong>Your share:</strong> ₹${share}</p>
+          <p style="margin: 0 0 8px; color: #475569;"><strong>Slots:</strong> ${filledSlots}/${group.totalSlots} filled</p>
+          <p style="margin: 0; color: #475569;"><strong>Organizer:</strong> ${group.organizer.name}</p>
+        </div>
+        ${isOrganizer ? `
+        <div style="margin-bottom: 24px;">
+          <a href="${group.olaDeepLink}" style="display: inline-block; background: #f97316; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; margin-right: 8px;">Book on Ola</a>
+          <a href="${group.uberDeepLink}" style="display: inline-block; background: #1c1917; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600;">Book on Uber</a>
+        </div>
+        ` : ''}
+        <p style="font-size: 13px; color: #94a3b8;">Pay your share to the organizer via UPI.</p>
+      </div>
+    `;
+
+    await sendEmail(
+      member.user.email,
+      `RideSync — ${group.origin} → ${group.destination}`,
+      emailHtml
+    );
+  }
+
+  console.log(`[WORKER] Done — notified ${group.members.length} members`);
 };
 
 export const notificationWorker = new Worker(
   'notifications',
   processNotification,
-  {
-    connection,
-    concurrency: 5,
-  }
+  { connection, concurrency: 3 }
 );
 
 notificationWorker.on('completed', (job) => {
