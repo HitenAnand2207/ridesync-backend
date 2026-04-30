@@ -8,17 +8,18 @@ datasource db {
 }
 
 model User {
-  id            String         @id @default(uuid())
-  name          String
-  email         String         @unique
-  password      String
-  phone         String?
-  avatar        String?
-  isVerified    Boolean        @default(false)
-  otpCode       String?
-  otpExpiresAt  DateTime?
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  id             String         @id @default(uuid())
+  name           String
+  email          String         @unique
+  password       String
+  phone          String?
+  avatar         String?
+  isVerified     Boolean        @default(false)
+  otpCode        String?
+  otpExpiresAt   DateTime?
+  telegramChatId String?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
 
   groupsCreated  RideGroup[]    @relation("CreatedGroups")
   memberships    GroupMember[]
@@ -57,16 +58,16 @@ model RideGroup {
 }
 
 model GroupMember {
-  id          String            @id @default(uuid())
-  groupId     String
-  userId      String
-  status      MemberStatus      @default(PENDING)
-  share       Float
-  createdAt   DateTime          @default(now())
-  updatedAt   DateTime          @updatedAt
+  id        String       @id @default(uuid())
+  groupId   String
+  userId    String
+  status    MemberStatus @default(PENDING)
+  share     Float
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
 
-  group       RideGroup         @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  group     RideGroup    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([groupId, userId])
   @@index([userId])
