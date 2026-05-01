@@ -13,10 +13,10 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: '22'
 
@@ -32,12 +32,15 @@ jobs:
       - name: Prepare deployment package
         run: |
           rm -rf deploy
+          rm -f deploy.zip
           mkdir -p deploy
           cp package.json package-lock.json deploy/
           cp web.config deploy/
           cp -R dist deploy/
           cp -R generated deploy/
           cp -R prisma deploy/
+          npm ci --omit=dev --prefix deploy
+          cd deploy && zip -r ../deploy.zip .
 
       - name: Login to Azure
         uses: azure/login@v2
@@ -48,4 +51,4 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: ridesync-backend
-          package: ./deploy
+          package: ./deploy.zip
