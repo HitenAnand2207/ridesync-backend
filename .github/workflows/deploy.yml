@@ -8,6 +8,8 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
 
     steps:
       - name: Checkout code
@@ -19,16 +21,13 @@ jobs:
           node-version: '22'
 
       - name: Install all dependencies
-        run: npm install
+        run: npm ci
 
       - name: Generate Prisma client
         run: npx prisma generate
 
       - name: Build TypeScript
         run: npm run build
-
-      - name: Remove dev dependencies
-        run: npm prune --omit=dev
 
       - name: Login to Azure
         uses: azure/login@v2
