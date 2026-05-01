@@ -29,6 +29,16 @@ jobs:
       - name: Build TypeScript
         run: npm run build
 
+      - name: Prepare deployment package
+        run: |
+          rm -rf deploy
+          mkdir -p deploy
+          cp package.json package-lock.json deploy/
+          cp web.config deploy/
+          cp -R dist deploy/
+          cp -R generated deploy/
+          cp -R prisma deploy/
+
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -38,4 +48,4 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: ridesync-backend
-          package: .
+          package: ./deploy
