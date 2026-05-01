@@ -18,7 +18,7 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Install dependencies
+      - name: Install all dependencies
         run: npm install
 
       - name: Generate Prisma client
@@ -27,8 +27,8 @@ jobs:
       - name: Build TypeScript
         run: npm run build
 
-      - name: Install production dependencies only
-        run: npm install --omit=dev
+      - name: Remove dev dependencies
+        run: npm prune --omit=dev
 
       - name: Login to Azure
         uses: azure/login@v2
