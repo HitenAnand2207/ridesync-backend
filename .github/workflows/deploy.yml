@@ -27,9 +27,8 @@ jobs:
       - name: Build TypeScript
         run: npm run build
 
-      - name: Create .env for production
-        run: |
-          echo "NODE_ENV=production" > .env.production
+      - name: Install production dependencies only
+        run: npm install --omit=dev
 
       - name: Login to Azure
         uses: azure/login@v2
@@ -41,9 +40,3 @@ jobs:
         with:
           app-name: ridesync-backend
           package: .
-
-      - name: Run Prisma migrations
-        run: |
-          npx prisma migrate deploy
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
