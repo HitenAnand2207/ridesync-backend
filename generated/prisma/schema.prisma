@@ -1,0 +1,136 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id             String    @id @default(uuid())
+  name           String
+  email          String    @unique
+  password       String
+  phone          String?
+  avatar         String?
+  isVerified     Boolean   @default(false)
+  otpCode        String?
+  otpExpiresAt   DateTime?
+  telegramChatId String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  groupsCreated RideGroup[]    @relation("CreatedGroups")
+  memberships   GroupMember[]
+  notifications Notification[]
+  payments      Payment[]
+
+  @@index([email])
+}
+
+model RideGroup {
+  id              String      @id @default(uuid())
+  organizerId     String
+  origin          String
+  destination     String
+  departureTime   DateTime
+  totalSlots      Int
+  availableSlots  Int
+  estimatedFare   Float
+  status          GroupStatus @default(OPEN)
+  description     String?
+  whatsappLink    String?
+  olaDeepLink     String?
+  uberDeepLink    String?
+  platformFeePaid Boolean     @default(false)
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  organizer User          @relation("CreatedGroups", fields: [organizerId], references: [id], onDelete: Cascade)
+  members   GroupMember[]
+  payment   Payment?
+
+  @@index([organizerId])
+  @@index([origin, destination])
+  @@index([departureTime])
+  @@index([status])
+}
+
+model GroupMember {
+  id        String       @id @default(uuid())
+  groupId   String
+  userId    String
+  status    MemberStatus @default(PENDING)
+  share     Float
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  group RideGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([groupId, userId])
+  @@index([userId])
+  @@index([groupId])
+}
+
+model Payment {
+  id                String        @id @default(uuid())
+  groupId           String        @unique
+  userId            String
+  amount            Float         @default(30)
+  currency          String        @default("INR")
+  razorpayOrderId   String        @unique
+  razorpayPaymentId String?
+  razorpaySignature String?
+  status            PaymentStatus @default(PENDING)
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  group RideGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([razorpayOrderId])
+}
+
+model Notification {
+  id        String           @id @default(uuid())
+  userId    String
+  title     String
+  message   String
+  type      NotificationType @default(INFO)
+  read      Boolean          @default(false)
+  createdAt DateTime         @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+enum GroupStatus {
+  OPEN
+  FULL
+  DEPARTED
+  CANCELLED
+}
+
+enum MemberStatus {
+  PENDING
+  CONFIRMED
+  LEFT
+}
+
+enum PaymentStatus {
+  PENDING
+  CAPTURED
+  FAILED
+  REFUNDED
+}
+
+enum NotificationType {
+  INFO
+  SUCCESS
+  WARNING
+  ERROR
+}
