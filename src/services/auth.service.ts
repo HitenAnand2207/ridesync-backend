@@ -14,8 +14,8 @@ export const registerUser = async (
   password: string,
   phone?: string
 ) => {
-  if (!email.endsWith('@kiit.ac.in')) {
-    throw new Error('Only KIIT email addresses (@kiit.ac.in) are allowed');
+  if (!email.includes('@') || !email.includes('.')) {
+    throw new Error('Please enter a valid email address');
   }
 
   const existing = await prisma.user.findUnique({ where: { email } });
