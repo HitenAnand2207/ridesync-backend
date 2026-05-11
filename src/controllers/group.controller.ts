@@ -1,3 +1,4 @@
+import { prisma } from '../config/prisma';
 import { Response } from 'express';
 import { AuthRequest } from '../types';
 import {
@@ -14,17 +15,39 @@ import {
 export const create = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const userId = req.user!.userId;
-    const { origin, destination, departureTime, totalSlots, estimatedFare, description } = req.body;
+    const {
+      origin, destination,
+      originLat, originLng,
+      destLat, destLng,
+      city,
+      departureTime, totalSlots,
+      estimatedFare, womenOnly, description
+    } = req.body;
 
     if (!origin || !destination || !departureTime || !totalSlots || !estimatedFare) {
       res.status(400).json({ message: 'origin, destination, departureTime, totalSlots and estimatedFare are required' });
       return;
     }
 
+    if (womenOnly) {
+      const user = await prisma.user.findUnique({ where: { id: userId } });
+      if (!user || user.gender !== 'Female') {
+        res.status(403).json({ message: 'Only women can create women-only groups' });
+        return;
+      }
+    }
+
     const group = await createGroup(userId, {
-      origin, destination, departureTime,
+      origin, destination,
+      originLat: originLat ? parseFloat(originLat) : undefined,
+      originLng: originLng ? parseFloat(originLng) : undefined,
+      destLat: destLat ? parseFloat(destLat) : undefined,
+      destLng: destLng ? parseFloat(destLng) : undefined,
+      city,
+      departureTime,
       totalSlots: parseInt(totalSlots),
       estimatedFare: parseFloat(estimatedFare),
+      womenOnly: womenOnly || false,
       description,
     });
 
@@ -33,7 +56,6 @@ export const create = async (req: AuthRequest, res: Response): Promise<void> => 
     res.status(400).json({ message: err.message });
   }
 };
-
 export const search = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const origin = req.query.origin as string | undefined;

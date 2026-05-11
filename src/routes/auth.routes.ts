@@ -38,5 +38,20 @@ router.delete('/telegram-disconnect', authenticate, async (req: any, res: Respon
     res.status(500).json({ message: err.message });
   }
 });
-
+router.patch('/profile', authenticate, async (req: any, res: Response) => {
+  try {
+    const { gender, city } = req.body;
+    const updated = await prisma.user.update({
+      where: { id: req.user.userId },
+      data: {
+        ...(gender && { gender }),
+        ...(city && { city }),
+      },
+      select: { id: true, name: true, email: true, phone: true, gender: true, city: true },
+    });
+    res.json({ user: updated });
+  } catch (err: any) {
+    res.status(500).json({ message: err.message });
+  }
+});
 export default router;

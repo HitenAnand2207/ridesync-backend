@@ -1395,6 +1395,8 @@ export namespace Prisma {
     password: string | null
     phone: string | null
     avatar: string | null
+    gender: string | null
+    city: string | null
     isVerified: boolean | null
     otpCode: string | null
     otpExpiresAt: Date | null
@@ -1410,6 +1412,8 @@ export namespace Prisma {
     password: string | null
     phone: string | null
     avatar: string | null
+    gender: string | null
+    city: string | null
     isVerified: boolean | null
     otpCode: string | null
     otpExpiresAt: Date | null
@@ -1425,6 +1429,8 @@ export namespace Prisma {
     password: number
     phone: number
     avatar: number
+    gender: number
+    city: number
     isVerified: number
     otpCode: number
     otpExpiresAt: number
@@ -1442,6 +1448,8 @@ export namespace Prisma {
     password?: true
     phone?: true
     avatar?: true
+    gender?: true
+    city?: true
     isVerified?: true
     otpCode?: true
     otpExpiresAt?: true
@@ -1457,6 +1465,8 @@ export namespace Prisma {
     password?: true
     phone?: true
     avatar?: true
+    gender?: true
+    city?: true
     isVerified?: true
     otpCode?: true
     otpExpiresAt?: true
@@ -1472,6 +1482,8 @@ export namespace Prisma {
     password?: true
     phone?: true
     avatar?: true
+    gender?: true
+    city?: true
     isVerified?: true
     otpCode?: true
     otpExpiresAt?: true
@@ -1560,6 +1572,8 @@ export namespace Prisma {
     password: string
     phone: string | null
     avatar: string | null
+    gender: string | null
+    city: string | null
     isVerified: boolean
     otpCode: string | null
     otpExpiresAt: Date | null
@@ -1592,6 +1606,8 @@ export namespace Prisma {
     password?: boolean
     phone?: boolean
     avatar?: boolean
+    gender?: boolean
+    city?: boolean
     isVerified?: boolean
     otpCode?: boolean
     otpExpiresAt?: boolean
@@ -1612,6 +1628,8 @@ export namespace Prisma {
     password?: boolean
     phone?: boolean
     avatar?: boolean
+    gender?: boolean
+    city?: boolean
     isVerified?: boolean
     otpCode?: boolean
     otpExpiresAt?: boolean
@@ -1627,6 +1645,8 @@ export namespace Prisma {
     password?: boolean
     phone?: boolean
     avatar?: boolean
+    gender?: boolean
+    city?: boolean
     isVerified?: boolean
     otpCode?: boolean
     otpExpiresAt?: boolean
@@ -1642,6 +1662,8 @@ export namespace Prisma {
     password?: boolean
     phone?: boolean
     avatar?: boolean
+    gender?: boolean
+    city?: boolean
     isVerified?: boolean
     otpCode?: boolean
     otpExpiresAt?: boolean
@@ -1650,7 +1672,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "password" | "phone" | "avatar" | "isVerified" | "otpCode" | "otpExpiresAt" | "telegramChatId" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "password" | "phone" | "avatar" | "gender" | "city" | "isVerified" | "otpCode" | "otpExpiresAt" | "telegramChatId" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     groupsCreated?: boolean | User$groupsCreatedArgs<ExtArgs>
     memberships?: boolean | User$membershipsArgs<ExtArgs>
@@ -1676,6 +1698,8 @@ export namespace Prisma {
       password: string
       phone: string | null
       avatar: string | null
+      gender: string | null
+      city: string | null
       isVerified: boolean
       otpCode: string | null
       otpExpiresAt: Date | null
@@ -2115,6 +2139,8 @@ export namespace Prisma {
     readonly password: FieldRef<"User", 'String'>
     readonly phone: FieldRef<"User", 'String'>
     readonly avatar: FieldRef<"User", 'String'>
+    readonly gender: FieldRef<"User", 'String'>
+    readonly city: FieldRef<"User", 'String'>
     readonly isVerified: FieldRef<"User", 'Boolean'>
     readonly otpCode: FieldRef<"User", 'String'>
     readonly otpExpiresAt: FieldRef<"User", 'DateTime'>
@@ -2641,12 +2667,20 @@ export namespace Prisma {
   }
 
   export type RideGroupAvgAggregateOutputType = {
+    originLat: number | null
+    originLng: number | null
+    destLat: number | null
+    destLng: number | null
     totalSlots: number | null
     availableSlots: number | null
     estimatedFare: number | null
   }
 
   export type RideGroupSumAggregateOutputType = {
+    originLat: number | null
+    originLng: number | null
+    destLat: number | null
+    destLng: number | null
     totalSlots: number | null
     availableSlots: number | null
     estimatedFare: number | null
@@ -2657,11 +2691,17 @@ export namespace Prisma {
     organizerId: string | null
     origin: string | null
     destination: string | null
+    originLat: number | null
+    originLng: number | null
+    destLat: number | null
+    destLng: number | null
+    city: string | null
     departureTime: Date | null
     totalSlots: number | null
     availableSlots: number | null
     estimatedFare: number | null
     status: $Enums.GroupStatus | null
+    womenOnly: boolean | null
     description: string | null
     whatsappLink: string | null
     olaDeepLink: string | null
@@ -2676,11 +2716,17 @@ export namespace Prisma {
     organizerId: string | null
     origin: string | null
     destination: string | null
+    originLat: number | null
+    originLng: number | null
+    destLat: number | null
+    destLng: number | null
+    city: string | null
     departureTime: Date | null
     totalSlots: number | null
     availableSlots: number | null
     estimatedFare: number | null
     status: $Enums.GroupStatus | null
+    womenOnly: boolean | null
     description: string | null
     whatsappLink: string | null
     olaDeepLink: string | null
@@ -2695,11 +2741,17 @@ export namespace Prisma {
     organizerId: number
     origin: number
     destination: number
+    originLat: number
+    originLng: number
+    destLat: number
+    destLng: number
+    city: number
     departureTime: number
     totalSlots: number
     availableSlots: number
     estimatedFare: number
     status: number
+    womenOnly: number
     description: number
     whatsappLink: number
     olaDeepLink: number
@@ -2712,12 +2764,20 @@ export namespace Prisma {
 
 
   export type RideGroupAvgAggregateInputType = {
+    originLat?: true
+    originLng?: true
+    destLat?: true
+    destLng?: true
     totalSlots?: true
     availableSlots?: true
     estimatedFare?: true
   }
 
   export type RideGroupSumAggregateInputType = {
+    originLat?: true
+    originLng?: true
+    destLat?: true
+    destLng?: true
     totalSlots?: true
     availableSlots?: true
     estimatedFare?: true
@@ -2728,11 +2788,17 @@ export namespace Prisma {
     organizerId?: true
     origin?: true
     destination?: true
+    originLat?: true
+    originLng?: true
+    destLat?: true
+    destLng?: true
+    city?: true
     departureTime?: true
     totalSlots?: true
     availableSlots?: true
     estimatedFare?: true
     status?: true
+    womenOnly?: true
     description?: true
     whatsappLink?: true
     olaDeepLink?: true
@@ -2747,11 +2813,17 @@ export namespace Prisma {
     organizerId?: true
     origin?: true
     destination?: true
+    originLat?: true
+    originLng?: true
+    destLat?: true
+    destLng?: true
+    city?: true
     departureTime?: true
     totalSlots?: true
     availableSlots?: true
     estimatedFare?: true
     status?: true
+    womenOnly?: true
     description?: true
     whatsappLink?: true
     olaDeepLink?: true
@@ -2766,11 +2838,17 @@ export namespace Prisma {
     organizerId?: true
     origin?: true
     destination?: true
+    originLat?: true
+    originLng?: true
+    destLat?: true
+    destLng?: true
+    city?: true
     departureTime?: true
     totalSlots?: true
     availableSlots?: true
     estimatedFare?: true
     status?: true
+    womenOnly?: true
     description?: true
     whatsappLink?: true
     olaDeepLink?: true
@@ -2872,11 +2950,17 @@ export namespace Prisma {
     organizerId: string
     origin: string
     destination: string
+    originLat: number | null
+    originLng: number | null
+    destLat: number | null
+    destLng: number | null
+    city: string | null
     departureTime: Date
     totalSlots: number
     availableSlots: number
     estimatedFare: number
     status: $Enums.GroupStatus
+    womenOnly: boolean
     description: string | null
     whatsappLink: string | null
     olaDeepLink: string | null
@@ -2910,11 +2994,17 @@ export namespace Prisma {
     organizerId?: boolean
     origin?: boolean
     destination?: boolean
+    originLat?: boolean
+    originLng?: boolean
+    destLat?: boolean
+    destLng?: boolean
+    city?: boolean
     departureTime?: boolean
     totalSlots?: boolean
     availableSlots?: boolean
     estimatedFare?: boolean
     status?: boolean
+    womenOnly?: boolean
     description?: boolean
     whatsappLink?: boolean
     olaDeepLink?: boolean
@@ -2933,11 +3023,17 @@ export namespace Prisma {
     organizerId?: boolean
     origin?: boolean
     destination?: boolean
+    originLat?: boolean
+    originLng?: boolean
+    destLat?: boolean
+    destLng?: boolean
+    city?: boolean
     departureTime?: boolean
     totalSlots?: boolean
     availableSlots?: boolean
     estimatedFare?: boolean
     status?: boolean
+    womenOnly?: boolean
     description?: boolean
     whatsappLink?: boolean
     olaDeepLink?: boolean
@@ -2953,11 +3049,17 @@ export namespace Prisma {
     organizerId?: boolean
     origin?: boolean
     destination?: boolean
+    originLat?: boolean
+    originLng?: boolean
+    destLat?: boolean
+    destLng?: boolean
+    city?: boolean
     departureTime?: boolean
     totalSlots?: boolean
     availableSlots?: boolean
     estimatedFare?: boolean
     status?: boolean
+    womenOnly?: boolean
     description?: boolean
     whatsappLink?: boolean
     olaDeepLink?: boolean
@@ -2973,11 +3075,17 @@ export namespace Prisma {
     organizerId?: boolean
     origin?: boolean
     destination?: boolean
+    originLat?: boolean
+    originLng?: boolean
+    destLat?: boolean
+    destLng?: boolean
+    city?: boolean
     departureTime?: boolean
     totalSlots?: boolean
     availableSlots?: boolean
     estimatedFare?: boolean
     status?: boolean
+    womenOnly?: boolean
     description?: boolean
     whatsappLink?: boolean
     olaDeepLink?: boolean
@@ -2987,7 +3095,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type RideGroupOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organizerId" | "origin" | "destination" | "departureTime" | "totalSlots" | "availableSlots" | "estimatedFare" | "status" | "description" | "whatsappLink" | "olaDeepLink" | "uberDeepLink" | "platformFeePaid" | "createdAt" | "updatedAt", ExtArgs["result"]["rideGroup"]>
+  export type RideGroupOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organizerId" | "origin" | "destination" | "originLat" | "originLng" | "destLat" | "destLng" | "city" | "departureTime" | "totalSlots" | "availableSlots" | "estimatedFare" | "status" | "womenOnly" | "description" | "whatsappLink" | "olaDeepLink" | "uberDeepLink" | "platformFeePaid" | "createdAt" | "updatedAt", ExtArgs["result"]["rideGroup"]>
   export type RideGroupInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     organizer?: boolean | UserDefaultArgs<ExtArgs>
     members?: boolean | RideGroup$membersArgs<ExtArgs>
@@ -3013,11 +3121,17 @@ export namespace Prisma {
       organizerId: string
       origin: string
       destination: string
+      originLat: number | null
+      originLng: number | null
+      destLat: number | null
+      destLng: number | null
+      city: string | null
       departureTime: Date
       totalSlots: number
       availableSlots: number
       estimatedFare: number
       status: $Enums.GroupStatus
+      womenOnly: boolean
       description: string | null
       whatsappLink: string | null
       olaDeepLink: string | null
@@ -3455,11 +3569,17 @@ export namespace Prisma {
     readonly organizerId: FieldRef<"RideGroup", 'String'>
     readonly origin: FieldRef<"RideGroup", 'String'>
     readonly destination: FieldRef<"RideGroup", 'String'>
+    readonly originLat: FieldRef<"RideGroup", 'Float'>
+    readonly originLng: FieldRef<"RideGroup", 'Float'>
+    readonly destLat: FieldRef<"RideGroup", 'Float'>
+    readonly destLng: FieldRef<"RideGroup", 'Float'>
+    readonly city: FieldRef<"RideGroup", 'String'>
     readonly departureTime: FieldRef<"RideGroup", 'DateTime'>
     readonly totalSlots: FieldRef<"RideGroup", 'Int'>
     readonly availableSlots: FieldRef<"RideGroup", 'Int'>
     readonly estimatedFare: FieldRef<"RideGroup", 'Float'>
     readonly status: FieldRef<"RideGroup", 'GroupStatus'>
+    readonly womenOnly: FieldRef<"RideGroup", 'Boolean'>
     readonly description: FieldRef<"RideGroup", 'String'>
     readonly whatsappLink: FieldRef<"RideGroup", 'String'>
     readonly olaDeepLink: FieldRef<"RideGroup", 'String'>
@@ -7353,6 +7473,8 @@ export namespace Prisma {
     password: 'password',
     phone: 'phone',
     avatar: 'avatar',
+    gender: 'gender',
+    city: 'city',
     isVerified: 'isVerified',
     otpCode: 'otpCode',
     otpExpiresAt: 'otpExpiresAt',
@@ -7369,11 +7491,17 @@ export namespace Prisma {
     organizerId: 'organizerId',
     origin: 'origin',
     destination: 'destination',
+    originLat: 'originLat',
+    originLng: 'originLng',
+    destLat: 'destLat',
+    destLng: 'destLng',
+    city: 'city',
     departureTime: 'departureTime',
     totalSlots: 'totalSlots',
     availableSlots: 'availableSlots',
     estimatedFare: 'estimatedFare',
     status: 'status',
+    womenOnly: 'womenOnly',
     description: 'description',
     whatsappLink: 'whatsappLink',
     olaDeepLink: 'olaDeepLink',
@@ -7494,20 +7622,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Int'
-   */
-  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
-    
-
-
-  /**
-   * Reference to a field of type 'Int[]'
-   */
-  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
-    
-
-
-  /**
    * Reference to a field of type 'Float'
    */
   export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -7518,6 +7632,20 @@ export namespace Prisma {
    * Reference to a field of type 'Float[]'
    */
   export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Int'
+   */
+  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+  /**
+   * Reference to a field of type 'Int[]'
+   */
+  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
     
 
 
@@ -7590,6 +7718,8 @@ export namespace Prisma {
     password?: StringFilter<"User"> | string
     phone?: StringNullableFilter<"User"> | string | null
     avatar?: StringNullableFilter<"User"> | string | null
+    gender?: StringNullableFilter<"User"> | string | null
+    city?: StringNullableFilter<"User"> | string | null
     isVerified?: BoolFilter<"User"> | boolean
     otpCode?: StringNullableFilter<"User"> | string | null
     otpExpiresAt?: DateTimeNullableFilter<"User"> | Date | string | null
@@ -7609,6 +7739,8 @@ export namespace Prisma {
     password?: SortOrder
     phone?: SortOrderInput | SortOrder
     avatar?: SortOrderInput | SortOrder
+    gender?: SortOrderInput | SortOrder
+    city?: SortOrderInput | SortOrder
     isVerified?: SortOrder
     otpCode?: SortOrderInput | SortOrder
     otpExpiresAt?: SortOrderInput | SortOrder
@@ -7631,6 +7763,8 @@ export namespace Prisma {
     password?: StringFilter<"User"> | string
     phone?: StringNullableFilter<"User"> | string | null
     avatar?: StringNullableFilter<"User"> | string | null
+    gender?: StringNullableFilter<"User"> | string | null
+    city?: StringNullableFilter<"User"> | string | null
     isVerified?: BoolFilter<"User"> | boolean
     otpCode?: StringNullableFilter<"User"> | string | null
     otpExpiresAt?: DateTimeNullableFilter<"User"> | Date | string | null
@@ -7650,6 +7784,8 @@ export namespace Prisma {
     password?: SortOrder
     phone?: SortOrderInput | SortOrder
     avatar?: SortOrderInput | SortOrder
+    gender?: SortOrderInput | SortOrder
+    city?: SortOrderInput | SortOrder
     isVerified?: SortOrder
     otpCode?: SortOrderInput | SortOrder
     otpExpiresAt?: SortOrderInput | SortOrder
@@ -7671,6 +7807,8 @@ export namespace Prisma {
     password?: StringWithAggregatesFilter<"User"> | string
     phone?: StringNullableWithAggregatesFilter<"User"> | string | null
     avatar?: StringNullableWithAggregatesFilter<"User"> | string | null
+    gender?: StringNullableWithAggregatesFilter<"User"> | string | null
+    city?: StringNullableWithAggregatesFilter<"User"> | string | null
     isVerified?: BoolWithAggregatesFilter<"User"> | boolean
     otpCode?: StringNullableWithAggregatesFilter<"User"> | string | null
     otpExpiresAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
@@ -7687,11 +7825,17 @@ export namespace Prisma {
     organizerId?: StringFilter<"RideGroup"> | string
     origin?: StringFilter<"RideGroup"> | string
     destination?: StringFilter<"RideGroup"> | string
+    originLat?: FloatNullableFilter<"RideGroup"> | number | null
+    originLng?: FloatNullableFilter<"RideGroup"> | number | null
+    destLat?: FloatNullableFilter<"RideGroup"> | number | null
+    destLng?: FloatNullableFilter<"RideGroup"> | number | null
+    city?: StringNullableFilter<"RideGroup"> | string | null
     departureTime?: DateTimeFilter<"RideGroup"> | Date | string
     totalSlots?: IntFilter<"RideGroup"> | number
     availableSlots?: IntFilter<"RideGroup"> | number
     estimatedFare?: FloatFilter<"RideGroup"> | number
     status?: EnumGroupStatusFilter<"RideGroup"> | $Enums.GroupStatus
+    womenOnly?: BoolFilter<"RideGroup"> | boolean
     description?: StringNullableFilter<"RideGroup"> | string | null
     whatsappLink?: StringNullableFilter<"RideGroup"> | string | null
     olaDeepLink?: StringNullableFilter<"RideGroup"> | string | null
@@ -7709,11 +7853,17 @@ export namespace Prisma {
     organizerId?: SortOrder
     origin?: SortOrder
     destination?: SortOrder
+    originLat?: SortOrderInput | SortOrder
+    originLng?: SortOrderInput | SortOrder
+    destLat?: SortOrderInput | SortOrder
+    destLng?: SortOrderInput | SortOrder
+    city?: SortOrderInput | SortOrder
     departureTime?: SortOrder
     totalSlots?: SortOrder
     availableSlots?: SortOrder
     estimatedFare?: SortOrder
     status?: SortOrder
+    womenOnly?: SortOrder
     description?: SortOrderInput | SortOrder
     whatsappLink?: SortOrderInput | SortOrder
     olaDeepLink?: SortOrderInput | SortOrder
@@ -7734,11 +7884,17 @@ export namespace Prisma {
     organizerId?: StringFilter<"RideGroup"> | string
     origin?: StringFilter<"RideGroup"> | string
     destination?: StringFilter<"RideGroup"> | string
+    originLat?: FloatNullableFilter<"RideGroup"> | number | null
+    originLng?: FloatNullableFilter<"RideGroup"> | number | null
+    destLat?: FloatNullableFilter<"RideGroup"> | number | null
+    destLng?: FloatNullableFilter<"RideGroup"> | number | null
+    city?: StringNullableFilter<"RideGroup"> | string | null
     departureTime?: DateTimeFilter<"RideGroup"> | Date | string
     totalSlots?: IntFilter<"RideGroup"> | number
     availableSlots?: IntFilter<"RideGroup"> | number
     estimatedFare?: FloatFilter<"RideGroup"> | number
     status?: EnumGroupStatusFilter<"RideGroup"> | $Enums.GroupStatus
+    womenOnly?: BoolFilter<"RideGroup"> | boolean
     description?: StringNullableFilter<"RideGroup"> | string | null
     whatsappLink?: StringNullableFilter<"RideGroup"> | string | null
     olaDeepLink?: StringNullableFilter<"RideGroup"> | string | null
@@ -7756,11 +7912,17 @@ export namespace Prisma {
     organizerId?: SortOrder
     origin?: SortOrder
     destination?: SortOrder
+    originLat?: SortOrderInput | SortOrder
+    originLng?: SortOrderInput | SortOrder
+    destLat?: SortOrderInput | SortOrder
+    destLng?: SortOrderInput | SortOrder
+    city?: SortOrderInput | SortOrder
     departureTime?: SortOrder
     totalSlots?: SortOrder
     availableSlots?: SortOrder
     estimatedFare?: SortOrder
     status?: SortOrder
+    womenOnly?: SortOrder
     description?: SortOrderInput | SortOrder
     whatsappLink?: SortOrderInput | SortOrder
     olaDeepLink?: SortOrderInput | SortOrder
@@ -7783,11 +7945,17 @@ export namespace Prisma {
     organizerId?: StringWithAggregatesFilter<"RideGroup"> | string
     origin?: StringWithAggregatesFilter<"RideGroup"> | string
     destination?: StringWithAggregatesFilter<"RideGroup"> | string
+    originLat?: FloatNullableWithAggregatesFilter<"RideGroup"> | number | null
+    originLng?: FloatNullableWithAggregatesFilter<"RideGroup"> | number | null
+    destLat?: FloatNullableWithAggregatesFilter<"RideGroup"> | number | null
+    destLng?: FloatNullableWithAggregatesFilter<"RideGroup"> | number | null
+    city?: StringNullableWithAggregatesFilter<"RideGroup"> | string | null
     departureTime?: DateTimeWithAggregatesFilter<"RideGroup"> | Date | string
     totalSlots?: IntWithAggregatesFilter<"RideGroup"> | number
     availableSlots?: IntWithAggregatesFilter<"RideGroup"> | number
     estimatedFare?: FloatWithAggregatesFilter<"RideGroup"> | number
     status?: EnumGroupStatusWithAggregatesFilter<"RideGroup"> | $Enums.GroupStatus
+    womenOnly?: BoolWithAggregatesFilter<"RideGroup"> | boolean
     description?: StringNullableWithAggregatesFilter<"RideGroup"> | string | null
     whatsappLink?: StringNullableWithAggregatesFilter<"RideGroup"> | string | null
     olaDeepLink?: StringNullableWithAggregatesFilter<"RideGroup"> | string | null
@@ -8030,6 +8198,8 @@ export namespace Prisma {
     password: string
     phone?: string | null
     avatar?: string | null
+    gender?: string | null
+    city?: string | null
     isVerified?: boolean
     otpCode?: string | null
     otpExpiresAt?: Date | string | null
@@ -8049,6 +8219,8 @@ export namespace Prisma {
     password: string
     phone?: string | null
     avatar?: string | null
+    gender?: string | null
+    city?: string | null
     isVerified?: boolean
     otpCode?: string | null
     otpExpiresAt?: Date | string | null
@@ -8068,6 +8240,8 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     otpCode?: NullableStringFieldUpdateOperationsInput | string | null
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -8087,6 +8261,8 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     otpCode?: NullableStringFieldUpdateOperationsInput | string | null
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -8106,6 +8282,8 @@ export namespace Prisma {
     password: string
     phone?: string | null
     avatar?: string | null
+    gender?: string | null
+    city?: string | null
     isVerified?: boolean
     otpCode?: string | null
     otpExpiresAt?: Date | string | null
@@ -8121,6 +8299,8 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     otpCode?: NullableStringFieldUpdateOperationsInput | string | null
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -8136,6 +8316,8 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     otpCode?: NullableStringFieldUpdateOperationsInput | string | null
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -8148,11 +8330,17 @@ export namespace Prisma {
     id?: string
     origin: string
     destination: string
+    originLat?: number | null
+    originLng?: number | null
+    destLat?: number | null
+    destLng?: number | null
+    city?: string | null
     departureTime: Date | string
     totalSlots: number
     availableSlots: number
     estimatedFare: number
     status?: $Enums.GroupStatus
+    womenOnly?: boolean
     description?: string | null
     whatsappLink?: string | null
     olaDeepLink?: string | null
@@ -8170,11 +8358,17 @@ export namespace Prisma {
     organizerId: string
     origin: string
     destination: string
+    originLat?: number | null
+    originLng?: number | null
+    destLat?: number | null
+    destLng?: number | null
+    city?: string | null
     departureTime: Date | string
     totalSlots: number
     availableSlots: number
     estimatedFare: number
     status?: $Enums.GroupStatus
+    womenOnly?: boolean
     description?: string | null
     whatsappLink?: string | null
     olaDeepLink?: string | null
@@ -8190,11 +8384,17 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     origin?: StringFieldUpdateOperationsInput | string
     destination?: StringFieldUpdateOperationsInput | string
+    originLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    originLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    destLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    destLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
     departureTime?: DateTimeFieldUpdateOperationsInput | Date | string
     totalSlots?: IntFieldUpdateOperationsInput | number
     availableSlots?: IntFieldUpdateOperationsInput | number
     estimatedFare?: FloatFieldUpdateOperationsInput | number
     status?: EnumGroupStatusFieldUpdateOperationsInput | $Enums.GroupStatus
+    womenOnly?: BoolFieldUpdateOperationsInput | boolean
     description?: NullableStringFieldUpdateOperationsInput | string | null
     whatsappLink?: NullableStringFieldUpdateOperationsInput | string | null
     olaDeepLink?: NullableStringFieldUpdateOperationsInput | string | null
@@ -8212,11 +8412,17 @@ export namespace Prisma {
     organizerId?: StringFieldUpdateOperationsInput | string
     origin?: StringFieldUpdateOperationsInput | string
     destination?: StringFieldUpdateOperationsInput | string
+    originLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    originLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    destLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    destLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
     departureTime?: DateTimeFieldUpdateOperationsInput | Date | string
     totalSlots?: IntFieldUpdateOperationsInput | number
     availableSlots?: IntFieldUpdateOperationsInput | number
     estimatedFare?: FloatFieldUpdateOperationsInput | number
     status?: EnumGroupStatusFieldUpdateOperationsInput | $Enums.GroupStatus
+    womenOnly?: BoolFieldUpdateOperationsInput | boolean
     description?: NullableStringFieldUpdateOperationsInput | string | null
     whatsappLink?: NullableStringFieldUpdateOperationsInput | string | null
     olaDeepLink?: NullableStringFieldUpdateOperationsInput | string | null
@@ -8233,11 +8439,17 @@ export namespace Prisma {
     organizerId: string
     origin: string
     destination: string
+    originLat?: number | null
+    originLng?: number | null
+    destLat?: number | null
+    destLng?: number | null
+    city?: string | null
     departureTime: Date | string
     totalSlots: number
     availableSlots: number
     estimatedFare: number
     status?: $Enums.GroupStatus
+    womenOnly?: boolean
     description?: string | null
     whatsappLink?: string | null
     olaDeepLink?: string | null
@@ -8251,11 +8463,17 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     origin?: StringFieldUpdateOperationsInput | string
     destination?: StringFieldUpdateOperationsInput | string
+    originLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    originLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    destLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    destLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
     departureTime?: DateTimeFieldUpdateOperationsInput | Date | string
     totalSlots?: IntFieldUpdateOperationsInput | number
     availableSlots?: IntFieldUpdateOperationsInput | number
     estimatedFare?: FloatFieldUpdateOperationsInput | number
     status?: EnumGroupStatusFieldUpdateOperationsInput | $Enums.GroupStatus
+    womenOnly?: BoolFieldUpdateOperationsInput | boolean
     description?: NullableStringFieldUpdateOperationsInput | string | null
     whatsappLink?: NullableStringFieldUpdateOperationsInput | string | null
     olaDeepLink?: NullableStringFieldUpdateOperationsInput | string | null
@@ -8270,11 +8488,17 @@ export namespace Prisma {
     organizerId?: StringFieldUpdateOperationsInput | string
     origin?: StringFieldUpdateOperationsInput | string
     destination?: StringFieldUpdateOperationsInput | string
+    originLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    originLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    destLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    destLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
     departureTime?: DateTimeFieldUpdateOperationsInput | Date | string
     totalSlots?: IntFieldUpdateOperationsInput | number
     availableSlots?: IntFieldUpdateOperationsInput | number
     estimatedFare?: FloatFieldUpdateOperationsInput | number
     status?: EnumGroupStatusFieldUpdateOperationsInput | $Enums.GroupStatus
+    womenOnly?: BoolFieldUpdateOperationsInput | boolean
     description?: NullableStringFieldUpdateOperationsInput | string | null
     whatsappLink?: NullableStringFieldUpdateOperationsInput | string | null
     olaDeepLink?: NullableStringFieldUpdateOperationsInput | string | null
@@ -8626,6 +8850,8 @@ export namespace Prisma {
     password?: SortOrder
     phone?: SortOrder
     avatar?: SortOrder
+    gender?: SortOrder
+    city?: SortOrder
     isVerified?: SortOrder
     otpCode?: SortOrder
     otpExpiresAt?: SortOrder
@@ -8641,6 +8867,8 @@ export namespace Prisma {
     password?: SortOrder
     phone?: SortOrder
     avatar?: SortOrder
+    gender?: SortOrder
+    city?: SortOrder
     isVerified?: SortOrder
     otpCode?: SortOrder
     otpExpiresAt?: SortOrder
@@ -8656,6 +8884,8 @@ export namespace Prisma {
     password?: SortOrder
     phone?: SortOrder
     avatar?: SortOrder
+    gender?: SortOrder
+    city?: SortOrder
     isVerified?: SortOrder
     otpCode?: SortOrder
     otpExpiresAt?: SortOrder
@@ -8736,6 +8966,17 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type FloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
   export type IntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -8780,11 +9021,17 @@ export namespace Prisma {
     organizerId?: SortOrder
     origin?: SortOrder
     destination?: SortOrder
+    originLat?: SortOrder
+    originLng?: SortOrder
+    destLat?: SortOrder
+    destLng?: SortOrder
+    city?: SortOrder
     departureTime?: SortOrder
     totalSlots?: SortOrder
     availableSlots?: SortOrder
     estimatedFare?: SortOrder
     status?: SortOrder
+    womenOnly?: SortOrder
     description?: SortOrder
     whatsappLink?: SortOrder
     olaDeepLink?: SortOrder
@@ -8795,6 +9042,10 @@ export namespace Prisma {
   }
 
   export type RideGroupAvgOrderByAggregateInput = {
+    originLat?: SortOrder
+    originLng?: SortOrder
+    destLat?: SortOrder
+    destLng?: SortOrder
     totalSlots?: SortOrder
     availableSlots?: SortOrder
     estimatedFare?: SortOrder
@@ -8805,11 +9056,17 @@ export namespace Prisma {
     organizerId?: SortOrder
     origin?: SortOrder
     destination?: SortOrder
+    originLat?: SortOrder
+    originLng?: SortOrder
+    destLat?: SortOrder
+    destLng?: SortOrder
+    city?: SortOrder
     departureTime?: SortOrder
     totalSlots?: SortOrder
     availableSlots?: SortOrder
     estimatedFare?: SortOrder
     status?: SortOrder
+    womenOnly?: SortOrder
     description?: SortOrder
     whatsappLink?: SortOrder
     olaDeepLink?: SortOrder
@@ -8824,11 +9081,17 @@ export namespace Prisma {
     organizerId?: SortOrder
     origin?: SortOrder
     destination?: SortOrder
+    originLat?: SortOrder
+    originLng?: SortOrder
+    destLat?: SortOrder
+    destLng?: SortOrder
+    city?: SortOrder
     departureTime?: SortOrder
     totalSlots?: SortOrder
     availableSlots?: SortOrder
     estimatedFare?: SortOrder
     status?: SortOrder
+    womenOnly?: SortOrder
     description?: SortOrder
     whatsappLink?: SortOrder
     olaDeepLink?: SortOrder
@@ -8839,9 +9102,29 @@ export namespace Prisma {
   }
 
   export type RideGroupSumOrderByAggregateInput = {
+    originLat?: SortOrder
+    originLng?: SortOrder
+    destLat?: SortOrder
+    destLng?: SortOrder
     totalSlots?: SortOrder
     availableSlots?: SortOrder
     estimatedFare?: SortOrder
+  }
+
+  export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
   export type IntWithAggregatesFilter<$PrismaModel = never> = {
@@ -9285,6 +9568,14 @@ export namespace Prisma {
     connect?: PaymentWhereUniqueInput
   }
 
+  export type NullableFloatFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type IntFieldUpdateOperationsInput = {
     set?: number
     increment?: number
@@ -9590,6 +9881,17 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
   export type NestedFloatFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel>
     in?: number[] | ListFloatFieldRefInput<$PrismaModel>
@@ -9606,6 +9908,22 @@ export namespace Prisma {
     in?: $Enums.GroupStatus[] | ListEnumGroupStatusFieldRefInput<$PrismaModel>
     notIn?: $Enums.GroupStatus[] | ListEnumGroupStatusFieldRefInput<$PrismaModel>
     not?: NestedEnumGroupStatusFilter<$PrismaModel> | $Enums.GroupStatus
+  }
+
+  export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
@@ -9705,11 +10023,17 @@ export namespace Prisma {
     id?: string
     origin: string
     destination: string
+    originLat?: number | null
+    originLng?: number | null
+    destLat?: number | null
+    destLng?: number | null
+    city?: string | null
     departureTime: Date | string
     totalSlots: number
     availableSlots: number
     estimatedFare: number
     status?: $Enums.GroupStatus
+    womenOnly?: boolean
     description?: string | null
     whatsappLink?: string | null
     olaDeepLink?: string | null
@@ -9725,11 +10049,17 @@ export namespace Prisma {
     id?: string
     origin: string
     destination: string
+    originLat?: number | null
+    originLng?: number | null
+    destLat?: number | null
+    destLng?: number | null
+    city?: string | null
     departureTime: Date | string
     totalSlots: number
     availableSlots: number
     estimatedFare: number
     status?: $Enums.GroupStatus
+    womenOnly?: boolean
     description?: string | null
     whatsappLink?: string | null
     olaDeepLink?: string | null
@@ -9867,11 +10197,17 @@ export namespace Prisma {
     organizerId?: StringFilter<"RideGroup"> | string
     origin?: StringFilter<"RideGroup"> | string
     destination?: StringFilter<"RideGroup"> | string
+    originLat?: FloatNullableFilter<"RideGroup"> | number | null
+    originLng?: FloatNullableFilter<"RideGroup"> | number | null
+    destLat?: FloatNullableFilter<"RideGroup"> | number | null
+    destLng?: FloatNullableFilter<"RideGroup"> | number | null
+    city?: StringNullableFilter<"RideGroup"> | string | null
     departureTime?: DateTimeFilter<"RideGroup"> | Date | string
     totalSlots?: IntFilter<"RideGroup"> | number
     availableSlots?: IntFilter<"RideGroup"> | number
     estimatedFare?: FloatFilter<"RideGroup"> | number
     status?: EnumGroupStatusFilter<"RideGroup"> | $Enums.GroupStatus
+    womenOnly?: BoolFilter<"RideGroup"> | boolean
     description?: StringNullableFilter<"RideGroup"> | string | null
     whatsappLink?: StringNullableFilter<"RideGroup"> | string | null
     olaDeepLink?: StringNullableFilter<"RideGroup"> | string | null
@@ -9979,6 +10315,8 @@ export namespace Prisma {
     password: string
     phone?: string | null
     avatar?: string | null
+    gender?: string | null
+    city?: string | null
     isVerified?: boolean
     otpCode?: string | null
     otpExpiresAt?: Date | string | null
@@ -9997,6 +10335,8 @@ export namespace Prisma {
     password: string
     phone?: string | null
     avatar?: string | null
+    gender?: string | null
+    city?: string | null
     isVerified?: boolean
     otpCode?: string | null
     otpExpiresAt?: Date | string | null
@@ -10090,6 +10430,8 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     otpCode?: NullableStringFieldUpdateOperationsInput | string | null
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -10108,6 +10450,8 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     otpCode?: NullableStringFieldUpdateOperationsInput | string | null
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -10176,11 +10520,17 @@ export namespace Prisma {
     id?: string
     origin: string
     destination: string
+    originLat?: number | null
+    originLng?: number | null
+    destLat?: number | null
+    destLng?: number | null
+    city?: string | null
     departureTime: Date | string
     totalSlots: number
     availableSlots: number
     estimatedFare: number
     status?: $Enums.GroupStatus
+    womenOnly?: boolean
     description?: string | null
     whatsappLink?: string | null
     olaDeepLink?: string | null
@@ -10197,11 +10547,17 @@ export namespace Prisma {
     organizerId: string
     origin: string
     destination: string
+    originLat?: number | null
+    originLng?: number | null
+    destLat?: number | null
+    destLng?: number | null
+    city?: string | null
     departureTime: Date | string
     totalSlots: number
     availableSlots: number
     estimatedFare: number
     status?: $Enums.GroupStatus
+    womenOnly?: boolean
     description?: string | null
     whatsappLink?: string | null
     olaDeepLink?: string | null
@@ -10224,6 +10580,8 @@ export namespace Prisma {
     password: string
     phone?: string | null
     avatar?: string | null
+    gender?: string | null
+    city?: string | null
     isVerified?: boolean
     otpCode?: string | null
     otpExpiresAt?: Date | string | null
@@ -10242,6 +10600,8 @@ export namespace Prisma {
     password: string
     phone?: string | null
     avatar?: string | null
+    gender?: string | null
+    city?: string | null
     isVerified?: boolean
     otpCode?: string | null
     otpExpiresAt?: Date | string | null
@@ -10273,11 +10633,17 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     origin?: StringFieldUpdateOperationsInput | string
     destination?: StringFieldUpdateOperationsInput | string
+    originLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    originLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    destLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    destLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
     departureTime?: DateTimeFieldUpdateOperationsInput | Date | string
     totalSlots?: IntFieldUpdateOperationsInput | number
     availableSlots?: IntFieldUpdateOperationsInput | number
     estimatedFare?: FloatFieldUpdateOperationsInput | number
     status?: EnumGroupStatusFieldUpdateOperationsInput | $Enums.GroupStatus
+    womenOnly?: BoolFieldUpdateOperationsInput | boolean
     description?: NullableStringFieldUpdateOperationsInput | string | null
     whatsappLink?: NullableStringFieldUpdateOperationsInput | string | null
     olaDeepLink?: NullableStringFieldUpdateOperationsInput | string | null
@@ -10294,11 +10660,17 @@ export namespace Prisma {
     organizerId?: StringFieldUpdateOperationsInput | string
     origin?: StringFieldUpdateOperationsInput | string
     destination?: StringFieldUpdateOperationsInput | string
+    originLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    originLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    destLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    destLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
     departureTime?: DateTimeFieldUpdateOperationsInput | Date | string
     totalSlots?: IntFieldUpdateOperationsInput | number
     availableSlots?: IntFieldUpdateOperationsInput | number
     estimatedFare?: FloatFieldUpdateOperationsInput | number
     status?: EnumGroupStatusFieldUpdateOperationsInput | $Enums.GroupStatus
+    womenOnly?: BoolFieldUpdateOperationsInput | boolean
     description?: NullableStringFieldUpdateOperationsInput | string | null
     whatsappLink?: NullableStringFieldUpdateOperationsInput | string | null
     olaDeepLink?: NullableStringFieldUpdateOperationsInput | string | null
@@ -10327,6 +10699,8 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     otpCode?: NullableStringFieldUpdateOperationsInput | string | null
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -10345,6 +10719,8 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     otpCode?: NullableStringFieldUpdateOperationsInput | string | null
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -10360,11 +10736,17 @@ export namespace Prisma {
     id?: string
     origin: string
     destination: string
+    originLat?: number | null
+    originLng?: number | null
+    destLat?: number | null
+    destLng?: number | null
+    city?: string | null
     departureTime: Date | string
     totalSlots: number
     availableSlots: number
     estimatedFare: number
     status?: $Enums.GroupStatus
+    womenOnly?: boolean
     description?: string | null
     whatsappLink?: string | null
     olaDeepLink?: string | null
@@ -10381,11 +10763,17 @@ export namespace Prisma {
     organizerId: string
     origin: string
     destination: string
+    originLat?: number | null
+    originLng?: number | null
+    destLat?: number | null
+    destLng?: number | null
+    city?: string | null
     departureTime: Date | string
     totalSlots: number
     availableSlots: number
     estimatedFare: number
     status?: $Enums.GroupStatus
+    womenOnly?: boolean
     description?: string | null
     whatsappLink?: string | null
     olaDeepLink?: string | null
@@ -10408,6 +10796,8 @@ export namespace Prisma {
     password: string
     phone?: string | null
     avatar?: string | null
+    gender?: string | null
+    city?: string | null
     isVerified?: boolean
     otpCode?: string | null
     otpExpiresAt?: Date | string | null
@@ -10426,6 +10816,8 @@ export namespace Prisma {
     password: string
     phone?: string | null
     avatar?: string | null
+    gender?: string | null
+    city?: string | null
     isVerified?: boolean
     otpCode?: string | null
     otpExpiresAt?: Date | string | null
@@ -10457,11 +10849,17 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     origin?: StringFieldUpdateOperationsInput | string
     destination?: StringFieldUpdateOperationsInput | string
+    originLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    originLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    destLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    destLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
     departureTime?: DateTimeFieldUpdateOperationsInput | Date | string
     totalSlots?: IntFieldUpdateOperationsInput | number
     availableSlots?: IntFieldUpdateOperationsInput | number
     estimatedFare?: FloatFieldUpdateOperationsInput | number
     status?: EnumGroupStatusFieldUpdateOperationsInput | $Enums.GroupStatus
+    womenOnly?: BoolFieldUpdateOperationsInput | boolean
     description?: NullableStringFieldUpdateOperationsInput | string | null
     whatsappLink?: NullableStringFieldUpdateOperationsInput | string | null
     olaDeepLink?: NullableStringFieldUpdateOperationsInput | string | null
@@ -10478,11 +10876,17 @@ export namespace Prisma {
     organizerId?: StringFieldUpdateOperationsInput | string
     origin?: StringFieldUpdateOperationsInput | string
     destination?: StringFieldUpdateOperationsInput | string
+    originLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    originLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    destLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    destLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
     departureTime?: DateTimeFieldUpdateOperationsInput | Date | string
     totalSlots?: IntFieldUpdateOperationsInput | number
     availableSlots?: IntFieldUpdateOperationsInput | number
     estimatedFare?: FloatFieldUpdateOperationsInput | number
     status?: EnumGroupStatusFieldUpdateOperationsInput | $Enums.GroupStatus
+    womenOnly?: BoolFieldUpdateOperationsInput | boolean
     description?: NullableStringFieldUpdateOperationsInput | string | null
     whatsappLink?: NullableStringFieldUpdateOperationsInput | string | null
     olaDeepLink?: NullableStringFieldUpdateOperationsInput | string | null
@@ -10511,6 +10915,8 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     otpCode?: NullableStringFieldUpdateOperationsInput | string | null
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -10529,6 +10935,8 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     otpCode?: NullableStringFieldUpdateOperationsInput | string | null
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -10547,6 +10955,8 @@ export namespace Prisma {
     password: string
     phone?: string | null
     avatar?: string | null
+    gender?: string | null
+    city?: string | null
     isVerified?: boolean
     otpCode?: string | null
     otpExpiresAt?: Date | string | null
@@ -10565,6 +10975,8 @@ export namespace Prisma {
     password: string
     phone?: string | null
     avatar?: string | null
+    gender?: string | null
+    city?: string | null
     isVerified?: boolean
     otpCode?: string | null
     otpExpiresAt?: Date | string | null
@@ -10599,6 +11011,8 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     otpCode?: NullableStringFieldUpdateOperationsInput | string | null
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -10617,6 +11031,8 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     otpCode?: NullableStringFieldUpdateOperationsInput | string | null
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -10632,11 +11048,17 @@ export namespace Prisma {
     id?: string
     origin: string
     destination: string
+    originLat?: number | null
+    originLng?: number | null
+    destLat?: number | null
+    destLng?: number | null
+    city?: string | null
     departureTime: Date | string
     totalSlots: number
     availableSlots: number
     estimatedFare: number
     status?: $Enums.GroupStatus
+    womenOnly?: boolean
     description?: string | null
     whatsappLink?: string | null
     olaDeepLink?: string | null
@@ -10681,11 +11103,17 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     origin?: StringFieldUpdateOperationsInput | string
     destination?: StringFieldUpdateOperationsInput | string
+    originLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    originLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    destLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    destLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
     departureTime?: DateTimeFieldUpdateOperationsInput | Date | string
     totalSlots?: IntFieldUpdateOperationsInput | number
     availableSlots?: IntFieldUpdateOperationsInput | number
     estimatedFare?: FloatFieldUpdateOperationsInput | number
     status?: EnumGroupStatusFieldUpdateOperationsInput | $Enums.GroupStatus
+    womenOnly?: BoolFieldUpdateOperationsInput | boolean
     description?: NullableStringFieldUpdateOperationsInput | string | null
     whatsappLink?: NullableStringFieldUpdateOperationsInput | string | null
     olaDeepLink?: NullableStringFieldUpdateOperationsInput | string | null
@@ -10701,11 +11129,17 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     origin?: StringFieldUpdateOperationsInput | string
     destination?: StringFieldUpdateOperationsInput | string
+    originLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    originLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    destLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    destLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
     departureTime?: DateTimeFieldUpdateOperationsInput | Date | string
     totalSlots?: IntFieldUpdateOperationsInput | number
     availableSlots?: IntFieldUpdateOperationsInput | number
     estimatedFare?: FloatFieldUpdateOperationsInput | number
     status?: EnumGroupStatusFieldUpdateOperationsInput | $Enums.GroupStatus
+    womenOnly?: BoolFieldUpdateOperationsInput | boolean
     description?: NullableStringFieldUpdateOperationsInput | string | null
     whatsappLink?: NullableStringFieldUpdateOperationsInput | string | null
     olaDeepLink?: NullableStringFieldUpdateOperationsInput | string | null
@@ -10721,11 +11155,17 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     origin?: StringFieldUpdateOperationsInput | string
     destination?: StringFieldUpdateOperationsInput | string
+    originLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    originLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    destLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    destLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
     departureTime?: DateTimeFieldUpdateOperationsInput | Date | string
     totalSlots?: IntFieldUpdateOperationsInput | number
     availableSlots?: IntFieldUpdateOperationsInput | number
     estimatedFare?: FloatFieldUpdateOperationsInput | number
     status?: EnumGroupStatusFieldUpdateOperationsInput | $Enums.GroupStatus
+    womenOnly?: BoolFieldUpdateOperationsInput | boolean
     description?: NullableStringFieldUpdateOperationsInput | string | null
     whatsappLink?: NullableStringFieldUpdateOperationsInput | string | null
     olaDeepLink?: NullableStringFieldUpdateOperationsInput | string | null

@@ -3,6 +3,7 @@ dotenv.config();
 
 import { prisma } from '../config/prisma';
 import { GroupStatus, MemberStatus } from '../../generated/prisma';
+import { notificationQueue } from '../config/queue';
 
 const generateOlaDeepLink = (destination: string): string => {
   const encoded = encodeURIComponent(destination);
@@ -23,9 +24,15 @@ export const createGroup = async (
   data: {
     origin: string;
     destination: string;
+    originLat?: number;
+    originLng?: number;
+    destLat?: number;
+    destLng?: number;
+    city?: string;
     departureTime: string;
     totalSlots: number;
     estimatedFare: number;
+    womenOnly?: boolean;
     description?: string;
   }
 ) => {
@@ -34,10 +41,16 @@ export const createGroup = async (
       organizerId,
       origin: data.origin,
       destination: data.destination,
+      originLat: data.originLat,
+      originLng: data.originLng,
+      destLat: data.destLat,
+      destLng: data.destLng,
+      city: data.city,
       departureTime: new Date(data.departureTime),
       totalSlots: data.totalSlots,
       availableSlots: data.totalSlots - 1,
       estimatedFare: data.estimatedFare,
+      womenOnly: data.womenOnly || false,
       description: data.description,
       olaDeepLink: generateOlaDeepLink(data.destination),
       uberDeepLink: generateUberDeepLink(data.destination),
@@ -50,9 +63,9 @@ export const createGroup = async (
       },
     },
     include: {
-      organizer: { select: { id: true, name: true, email: true, phone: true } },
+      organizer: { select: { id: true, name: true, email: true, phone: true, gender: true } },
       members: {
-        include: { user: { select: { id: true, name: true, email: true, phone: true } } },
+        include: { user: { select: { id: true, name: true, email: true, phone: true, gender: true } } },
       },
     },
   });
@@ -65,6 +78,7 @@ export const searchGroups = async (filters: {
   destination?: string;
   date?: string;
   slots?: number;
+  city?: string;
 }) => {
   const where: any = {
     status: GroupStatus.OPEN,
@@ -88,12 +102,16 @@ export const searchGroups = async (filters: {
     where.departureTime = { gte: start, lte: end };
   }
 
+  if (filters.city) {
+    where.city = { contains: filters.city, mode: 'insensitive' };
+  }
+
   const groups = await prisma.rideGroup.findMany({
     where,
     include: {
-      organizer: { select: { id: true, name: true, email: true, phone: true } },
+      organizer: { select: { id: true, name: true, email: true, phone: true, gender: true } },
       members: {
-        include: { user: { select: { id: true, name: true, email: true } } },
+        include: { user: { select: { id: true, name: true, email: true, gender: true } } },
       },
       _count: { select: { members: true } },
     },
@@ -107,9 +125,9 @@ export const getGroupById = async (id: string) => {
   const group = await prisma.rideGroup.findUnique({
     where: { id },
     include: {
-      organizer: { select: { id: true, name: true, email: true, phone: true } },
+      organizer: { select: { id: true, name: true, email: true, phone: true, gender: true } },
       members: {
-        include: { user: { select: { id: true, name: true, email: true, phone: true } } },
+        include: { user: { select: { id: true, name: true, email: true, phone: true, gender: true } } },
       },
     },
   });
@@ -133,6 +151,14 @@ export const joinGroup = async (groupId: string, userId: string) => {
   const alreadyMember = group.members.find(m => m.userId === userId);
   if (alreadyMember) throw new Error('You have already joined this group');
 
+  if (group.womenOnly) {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) throw new Error('User not found');
+    if (user.gender !== 'Female') {
+      throw new Error('This is a women-only group');
+    }
+  }
+
   const share = calculateShare(group.estimatedFare, group.totalSlots);
 
   const [member] = await prisma.$transaction([
@@ -144,7 +170,7 @@ export const joinGroup = async (groupId: string, userId: string) => {
         share,
       },
       include: {
-        user: { select: { id: true, name: true, email: true, phone: true } },
+        user: { select: { id: true, name: true, email: true, phone: true, gender: true } },
         group: {
           include: {
             organizer: { select: { id: true, name: true, email: true, phone: true } },
@@ -160,6 +186,12 @@ export const joinGroup = async (groupId: string, userId: string) => {
       },
     }),
   ]);
+
+  await notificationQueue.add('member-joined', {
+    type: 'MEMBER_JOINED',
+    groupId,
+    triggerUserId: userId,
+  });
 
   return member;
 };
@@ -188,6 +220,12 @@ export const leaveGroup = async (groupId: string, userId: string) => {
     }),
   ]);
 
+  await notificationQueue.add('member-left', {
+    type: 'MEMBER_LEFT',
+    groupId,
+    triggerUserId: userId,
+  });
+
   return { message: 'You have left the group' };
 };
 
@@ -203,6 +241,11 @@ export const cancelGroup = async (groupId: string, userId: string) => {
     data: { status: GroupStatus.CANCELLED },
   });
 
+  await notificationQueue.add('group-cancelled', {
+    type: 'GROUP_CANCELLED',
+    groupId,
+  });
+
   return updated;
 };
 
@@ -212,7 +255,7 @@ export const getMyGroups = async (userId: string) => {
     include: {
       _count: { select: { members: true } },
       members: {
-        include: { user: { select: { id: true, name: true, email: true } } },
+        include: { user: { select: { id: true, name: true, email: true, gender: true } } },
       },
     },
     orderBy: { createdAt: 'desc' },
@@ -227,7 +270,7 @@ export const getMyMemberships = async (userId: string) => {
     include: {
       group: {
         include: {
-          organizer: { select: { id: true, name: true, email: true, phone: true } },
+          organizer: { select: { id: true, name: true, email: true, phone: true, gender: true } },
           _count: { select: { members: true } },
         },
       },
