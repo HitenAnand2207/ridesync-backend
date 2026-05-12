@@ -130,6 +130,7 @@ export const buildTelegramMessage = (data: {
   filledSlots: number;
   organizerName: string;
   organizerPhone?: string | null;
+  triggerUserName?: string;
   olaDeepLink: string;
   uberDeepLink: string;
   isOrganizer: boolean;
@@ -140,12 +141,18 @@ export const buildTelegramMessage = (data: {
     timeStyle: 'short',
   });
 
-  const header = {
+  let header = {
     GROUP_CREATED: `🚗 *Your group is live!*`,
     MEMBER_JOINED: `👋 *New member joined!*`,
     MEMBER_LEFT: `❌ *A member left the group*`,
     GROUP_CANCELLED: `⚠️ *Group cancelled*`,
   }[data.eventType];
+
+  if (data.eventType === 'MEMBER_JOINED') {
+    header = `*${data.triggerUserName || 'Someone'} joined the group!*`;
+  } else if (data.eventType === 'MEMBER_LEFT') {
+    header = `*${data.triggerUserName || 'Someone'} left the group*`;
+  }
 
   let message = `${header}
 

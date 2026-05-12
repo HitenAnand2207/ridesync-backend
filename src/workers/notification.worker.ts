@@ -12,13 +12,22 @@ const connection = new IORedis(process.env.REDIS_URL!, {
 });
 
 export interface NotificationJobData {
-  type: 'GROUP_CREATED' | 'MEMBER_JOINED' | 'MEMBER_LEFT' | 'GROUP_CANCELLED';
-  groupId: string;
+  type: 'GROUP_CREATED' | 'MEMBER_JOINED' | 'MEMBER_LEFT' | 'GROUP_CANCELLED' | 'BOOKING_CONFIRMED';
+  groupId?: string;
+  bookingId?: string;
   triggerUserId?: string;
 }
 
 const processNotification = async (job: Job<NotificationJobData>) => {
-  const { type, groupId } = job.data;
+  const type = job.data.type === 'BOOKING_CONFIRMED' ? 'GROUP_CREATED' : job.data.type;
+  const groupId = job.data.groupId || job.data.bookingId;
+  const { triggerUserId } = job.data;
+
+  if (!groupId) {
+    console.warn(`[WORKER] Skipping ${job.name}: missing groupId`);
+    return;
+  }
+
   console.log(`[WORKER] Processing: ${type} for group ${groupId}`);
 
   const group = await prisma.rideGroup.findUnique({
@@ -33,6 +42,10 @@ const processNotification = async (job: Job<NotificationJobData>) => {
   });
 
   if (!group) return;
+
+  const triggerUser = triggerUserId
+    ? await prisma.user.findUnique({ where: { id: triggerUserId } })
+    : null;
 
   const filledSlots = group.members.length;
   const share = Math.ceil(group.estimatedFare / group.totalSlots);
@@ -49,6 +62,7 @@ const processNotification = async (job: Job<NotificationJobData>) => {
       filledSlots,
       organizerName: group.organizer.name,
       organizerPhone: group.organizer.phone,
+      triggerUserName: triggerUser?.name,
       olaDeepLink: group.olaDeepLink || '',
       uberDeepLink: group.uberDeepLink || '',
       isOrganizer,
@@ -91,11 +105,15 @@ const processNotification = async (job: Job<NotificationJobData>) => {
       </div>
     `;
 
-    await sendEmail(
-      member.user.email,
-      `RideSync — ${group.origin} → ${group.destination}`,
-      emailHtml
-    );
+    try {
+      await sendEmail(
+        member.user.email,
+        `RideSync — ${group.origin} → ${group.destination}`,
+        emailHtml
+      );
+    } catch (err: any) {
+      console.error(`[MAILER] Notification email failed for ${member.user.email}:`, err.message);
+    }
   }
 
   console.log(`[WORKER] Done — notified ${group.members.length} members`);

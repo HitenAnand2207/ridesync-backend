@@ -94,14 +94,9 @@ export const verifyPlatformFeePayment = async (
   ]);
 
   await notificationQueue.add('group-created', {
-    type: 'BOOKING_CONFIRMED',
-    userId: group.organizer.id,
-    email: group.organizer.email,
-    name: group.organizer.name,
-    rideOrigin: group.origin,
-    rideDestination: group.destination,
-    departureTime: group.departureTime.toISOString(),
-    bookingId: groupId,
+    type: 'GROUP_CREATED',
+    groupId,
+    triggerUserId: userId,
   });
 
   return { success: true, groupId };
