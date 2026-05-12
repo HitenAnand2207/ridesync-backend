@@ -3,6 +3,7 @@ import { register, login, refresh, logout, verify, resend } from '../controllers
 import { authenticate } from '../middlewares/auth.middleware';
 import { prisma } from '../config/prisma';
 import { redis } from '../config/redis';
+import { env } from '../config/env';
 
 const router = Router();
 
@@ -19,8 +20,8 @@ router.get('/telegram-link', authenticate, async (req: any, res: Response) => {
     await redis.set(`telegram_connect:${code}`, req.user.userId, 'EX', 600);
     res.json({
       code,
-      botUsername: 'RideSyncKIITBot',
-      link: `https://t.me/RideSyncKIITBot`,
+      botUsername: env.telegram.botUsername,
+      link: `https://t.me/${env.telegram.botUsername}`,
     });
   } catch (err: any) {
     res.status(500).json({ message: err.message });

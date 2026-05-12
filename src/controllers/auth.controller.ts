@@ -20,7 +20,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 
     const user = await registerUser(name, email, password, phone);
     res.status(201).json({
-      message: 'Account created. Please check your KIIT email for the OTP.',
+      message: 'Account created. Please check your email for the OTP.',
       user,
     });
   } catch (err: any) {
